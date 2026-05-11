@@ -1,0 +1,274 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Mobile Hat brand (sampled from logo) ── */
+  --color-brand-navy: #1e2d4a;
+  --color-brand-navy-deep: #162238;
+  --color-brand-yellow: #ffb233;
+  --color-brand-yellow-bright: #ffc85c;
+  --color-brand-cream: #fffbf0;
+  --color-brand-paper: #f8f6f3;
+
+  /* ── Legacy token aliases (maps old names to new palette where used in JS) ── */
+  --color-brand-blue: #1e2d4a;
+  --color-brand-blue-hover: #162238;
+  --color-brand-red: #ef4444;
+  --color-brand-red-light: #ff4757;
+  --color-brand-dark: #111827;
+  --color-brand-black: #000000;
+  --color-brand-gray-light: #f8f6f3;
+  --color-brand-gray-border: #e8e4df;
+  --color-brand-white: #ffffff;
+  --color-brand-text: #1e2d4a;
+  --color-brand-muted: #5c6578;
+
+  /* ── Font Family ── */
+  --font-sans: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), 'JetBrains Mono', monospace;
+}
+
+/* ── Base Styles ── */
+body {
+  background-color: var(--color-brand-paper);
+  color: var(--color-brand-text);
+}
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c5cad6;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ── Animations ── */
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(255, 178, 51, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 28px rgba(255, 178, 51, 0.45);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out forwards;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+@keyframes bounce-slow {
+
+  0%,
+  100% {
+    transform: translateY(-10%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s infinite;
+}
+
+/* Header mega menu animations */
+@keyframes mega-menu-fade-down {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-mega-menu {
+  animation: mega-menu-fade-down 0.16s ease-out;
+}
+
+@keyframes fade-line-up {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-line {
+  animation: fade-line-up 0.22s ease-out forwards;
+  opacity: 0;
+}
+
+/* ── Glassmorphism ── */
+.glass {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* ── Glow Effects ── */
+.glow-blue {
+  box-shadow: 0 0 20px rgba(30, 45, 74, 0.12), 0 0 60px rgba(30, 45, 74, 0.06);
+}
+
+.glow-blue-sm {
+  box-shadow: 0 0 10px rgba(30, 45, 74, 0.1);
+}
+
+.glow-red {
+  box-shadow: 0 0 20px rgba(255, 71, 87, 0.15);
+}
+
+/* ── Gradients ── */
+.gradient-primary {
+  background: linear-gradient(135deg, #1e2d4a 0%, #162238 100%);
+}
+
+.gradient-card {
+  background: linear-gradient(145deg, #ffffff 0%, #fffbf0 100%);
+}
+
+.gradient-hot {
+  background: linear-gradient(135deg, #ff4757 0%, #ef4444 100%);
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, #ffb233 0%, #ea9a26 100%);
+}
+
+/* ── Hide scrollbar ── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  /* ── iOS Zoom Fix ── */
+  @media screen and (max-width: 768px) {
+
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    input[type="search"],
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 72" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Mobile Hat</title>
+  <desc id="desc">Your Gadget Hub  shopping bag and hand mark with wordmark</desc>
+  <g transform="translate(4,6)">
+    <!-- Shopping bag -->
+    <rect x="2" y="10" width="44" height="48" rx="8" fill="#FFB233" stroke="#1E2D4A" stroke-width="3"/>
+    <path d="M16 10 V6 C16 2 20 0 24 0 C28 0 32 2 32 6 V10" stroke="#1E2D4A" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- Hand / tap -->
+    <path d="M8 52 L8 38 C8 34 12 32 16 34 L18 36 L18 28 C18 24 24 22 28 26 L30 30 L30 22 C30 18 36 16 40 20 L42 24 L42 18 C42 14 48 12 52 16 L52 52 Z" fill="#ffffff" stroke="#1E2D4A" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M22 28 L22 18 C22 14 26 12 30 14" stroke="#1E2D4A" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(64, 8)">
+    <text x="0" y="18" fill="#1E2D4A" font-family="Inter, system-ui, sans-serif" font-size="13" font-style="italic" font-weight="600">Your Gadget Hub</text>
+    <text x="0" y="50" fill="#1E2D4A" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="800" letter-spacing="0.04em">MOBILE HAT</text>
+  </g>
+</svg>
