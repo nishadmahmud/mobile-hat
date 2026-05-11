@@ -6,15 +6,18 @@ import { MdHome, MdViewList, MdShoppingCart, MdLocalOffer, MdPerson } from "reac
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
+import { useHomeNavigationLock } from "../../context/HomeNavigationLockContext";
 
 export default function MobileBottomNav() {
     const pathname = usePathname();
     const { cartCount, toggleCart, closeCart } = useCart();
     const { user, openAuthModal } = useAuth();
     const router = useRouter();
+    const { isLocked: isHomeNavLocked } = useHomeNavigationLock();
 
     const handleProfileClick = (e) => {
         if (e) e.preventDefault();
+        if (isHomeNavLocked) return;
         closeCart();
         if (user) {
             router.push("/profile");
