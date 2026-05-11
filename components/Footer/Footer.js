@@ -69,34 +69,16 @@ export default function Footer() {
                             <p className="max-w-sm text-[14px] leading-relaxed text-brand-muted">
                                 Genuine phones, accessories, and tech — fair pricing and dependable delivery across Bangladesh.
                             </p>
-                            <div className="flex flex-wrap gap-2">
-                                <a
-                                    href="https://web.facebook.com/Applex.bd"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-cream text-[#1877f2] transition-transform hover:-translate-y-0.5 hover:bg-brand-navy hover:text-white"
-                                    aria-label="Facebook"
-                                >
+                            <div className="flex flex-wrap gap-2" aria-hidden="true">
+                                <span className="flex h-10 w-10 cursor-default items-center justify-center rounded-xl bg-brand-cream text-[#1877f2] transition-transform hover:-translate-y-0.5 hover:bg-brand-navy hover:text-white">
                                     <FaFacebook size={18} />
-                                </a>
-                                <a
-                                    href="https://www.tiktok.com/@applexofficialbd"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-cream text-brand-navy transition-transform hover:-translate-y-0.5 hover:bg-brand-navy hover:text-white"
-                                    aria-label="TikTok"
-                                >
+                                </span>
+                                <span className="flex h-10 w-10 cursor-default items-center justify-center rounded-xl bg-brand-cream text-brand-navy transition-transform hover:-translate-y-0.5 hover:bg-brand-navy hover:text-white">
                                     <FaTiktok size={18} />
-                                </a>
-                                <a
-                                    href="https://www.youtube.com/@user-lh5pe6ug2b"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-cream text-red-600 transition-transform hover:-translate-y-0.5 hover:bg-red-600 hover:text-white"
-                                    aria-label="YouTube"
-                                >
+                                </span>
+                                <span className="flex h-10 w-10 cursor-default items-center justify-center rounded-xl bg-brand-cream text-red-600 transition-transform hover:-translate-y-0.5 hover:bg-red-600 hover:text-white">
                                     <FaYoutube size={18} />
-                                </a>
+                                </span>
                             </div>
                         </div>
 
@@ -162,16 +144,16 @@ export default function Footer() {
                                             <FaMapMarkerAlt size={14} />
                                         </span>
                                         <span className="text-brand-muted leading-snug">
-                                            4D-018B1, Block D, Lvl 4, Jamuna Future Park, Dhaka
+                                            Your store or office address, area, city
                                         </span>
                                     </li>
                                     <li className="flex gap-3">
                                         <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-cream text-brand-navy">
                                             <FaPhoneAlt size={14} />
                                         </span>
-                                        <a href="tel:01980803060" className="font-bold text-brand-navy hover:underline">
-                                            01980-803060
-                                        </a>
+                                        <span className="font-bold text-brand-navy">
+                                            Your customer care number
+                                        </span>
                                     </li>
                                     <li className="flex gap-3">
                                         <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-cream text-brand-navy">
