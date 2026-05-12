@@ -1,17 +1,16 @@
 "use client";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { FiHeart, FiTrash2, FiShoppingCart, FiShoppingBag } from 'react-icons/fi';
-import { useWishlist } from '../../context/WishlistContext';
-import { useCart } from '../../context/CartContext';
+import Link from "next/link";
+import Image from "next/image";
+import { Heart, Trash2, ShoppingCart, ShoppingBag } from "lucide-react";
+import { useWishlist } from "../../context/WishlistContext";
+import { useCart } from "../../context/CartContext";
 
 export default function WishlistPage() {
     const { wishlist, removeFromWishlist } = useWishlist();
     const { addToCart } = useCart();
 
     const handleAddToCart = (product) => {
-        // Clean up the product object for the cart if needed
         const cartProduct = {
             id: product.id,
             name: product.name,
@@ -19,97 +18,100 @@ export default function WishlistPage() {
             oldPrice: product.oldPrice,
             imageUrl: product.imageUrl,
             brand: product.brand,
-            categoryName: product.categoryName
+            categoryName: product.categoryName,
         };
         addToCart(cartProduct);
         removeFromWishlist(product.id);
     };
 
     return (
-        <div className="bg-gray-50 min-h-screen pb-20 md:pb-12">
-            {/* Header */}
-            <div className="bg-white border-b border-gray-200 py-8">
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
-                    <h1 className="text-2xl md:text-3xl font-black text-gray-900 flex items-center gap-3">
-                        <FiHeart className="text-red-500 fill-red-500" /> My Wishlist
+        <div className="min-h-screen bg-brand-paper pb-20 md:pb-12">
+            <div className="border-b border-brand-gray-border/80 bg-white py-8">
+                <div className="mx-auto max-w-[1550px] px-4 md:px-8">
+                    <h1 className="flex items-center gap-3 text-2xl font-black text-brand-navy md:text-3xl">
+                        <Heart className="size-8 shrink-0 fill-red-500 text-red-500 md:size-9" strokeWidth={2} aria-hidden />
+                        My wishlist
                     </h1>
-                    <p className="text-gray-500 mt-2 text-sm md:text-base">Products you&apos;ve saved for later.</p>
+                    <p className="mt-2 text-sm text-brand-muted md:text-base">Products you&apos;ve saved for later.</p>
                 </div>
             </div>
 
-            <div className="max-w-[1550px] mx-auto px-4 md:px-8 py-8 md:py-12">
+            <div className="mx-auto max-w-[1550px] px-4 py-8 md:px-8 md:py-12">
                 {wishlist.length === 0 ? (
-                    <div className="bg-white rounded-3xl p-12 md:p-20 text-center shadow-sm border border-gray-100 max-w-2xl mx-auto">
-                        <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <FiHeart className="w-10 h-10 text-gray-300" />
+                    <div className="mx-auto max-w-2xl rounded-3xl border border-brand-gray-border bg-white p-12 text-center shadow-sm md:p-20">
+                        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-brand-gray-border bg-brand-paper">
+                            <Heart className="size-10 text-brand-muted/40" strokeWidth={1.5} />
                         </div>
-                        <h2 className="text-2xl font-black text-gray-900 mb-4">Your wishlist is empty</h2>
-                        <p className="text-gray-500 mb-8 max-w-sm mx-auto">
-                            Add items you love to your wishlist and they will show up here.
-                        </p>
+                        <h2 className="mb-4 text-2xl font-black text-brand-navy">Your wishlist is empty</h2>
+                        <p className="mx-auto mb-8 max-w-sm text-brand-muted">Add items you love to your wishlist and they will show up here.</p>
                         <Link
                             href="/"
-                            className="inline-flex items-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/20 active:scale-95"
+                            className="inline-flex items-center gap-2 rounded-2xl bg-brand-navy px-8 py-3.5 font-black uppercase tracking-widest text-white shadow-lg shadow-brand-navy/25 transition-all hover:bg-brand-navy-deep active:scale-[0.98]"
                         >
-                            <FiShoppingBag /> Start Shopping
+                            <ShoppingBag className="size-5 shrink-0" strokeWidth={2} />
+                            Start shopping
                         </Link>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                         {wishlist.map((product) => (
-                            <div key={product.id} className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group h-full">
-                                {/* Image Container */}
+                            <div
+                                key={product.id}
+                                className="group flex h-full flex-col overflow-hidden rounded-3xl border border-brand-gray-border bg-white shadow-sm"
+                            >
                                 <Link
-                                    href={`/product/${product.name.toLowerCase().replace(/\s+/g, '-')}-${product.id}`}
-                                    className="relative aspect-square bg-gray-50 overflow-hidden shrink-0"
+                                    href={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}-${product.id}`}
+                                    className="relative aspect-square shrink-0 overflow-hidden bg-brand-paper"
                                 >
                                     <Image
                                         src={product.imageUrl || "/no-image.svg"}
                                         alt={product.name}
                                         fill
-                                        className="object-contain p-6 group-hover:scale-110 transition-transform duration-500"
+                                        className="object-contain p-6 transition-transform duration-500 group-hover:scale-110"
                                         unoptimized
                                     />
                                     {product.discount && (
-                                        <div className="absolute top-3 left-3 px-2.5 py-1 bg-red-600 text-white text-[10px] font-black rounded-lg shadow-sm">
+                                        <div className="absolute left-3 top-3 rounded-lg bg-red-600 px-2.5 py-1 text-[10px] font-black text-white shadow-sm">
                                             {product.discount}
                                         </div>
                                     )}
                                 </Link>
 
-                                {/* Content */}
-                                <div className="p-5 flex flex-col flex-1">
+                                <div className="flex flex-1 flex-col p-5">
                                     <div className="mb-2">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{product.brand}</p>
+                                        <p className="mb-1 text-[10px] font-black uppercase tracking-widest text-brand-muted">{product.brand}</p>
                                         <Link
-                                            href={`/product/${product.name.toLowerCase().replace(/\s+/g, '-')}-${product.id}`}
-                                            className="text-sm md:text-base font-bold text-gray-900 hover:text-blue-600 transition-colors line-clamp-2 leading-snug"
+                                            href={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}-${product.id}`}
+                                            className="line-clamp-2 text-sm font-bold leading-snug text-brand-navy transition-colors hover:text-brand-yellow-bright md:text-base"
                                         >
                                             {product.name}
                                         </Link>
                                     </div>
 
                                     <div className="mt-auto">
-                                        <div className="flex items-baseline gap-2 mb-4">
-                                            <span className="text-lg font-black text-gray-900">{product.price}</span>
+                                        <div className="mb-4 flex items-baseline gap-2">
+                                            <span className="text-lg font-black text-brand-navy">{product.price}</span>
                                             {product.oldPrice && (
-                                                <span className="text-sm text-gray-400 line-through font-medium">{product.oldPrice}</span>
+                                                <span className="text-sm font-medium text-brand-muted line-through">{product.oldPrice}</span>
                                             )}
                                         </div>
 
                                         <div className="flex gap-2">
                                             <button
+                                                type="button"
                                                 onClick={() => handleAddToCart(product)}
-                                                className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all active:scale-95"
+                                                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-navy py-2.5 text-xs font-black uppercase tracking-wide text-white transition-all hover:bg-brand-navy-deep active:scale-[0.98]"
                                             >
-                                                <FiShoppingCart className="w-4 h-4" /> Add to Cart
+                                                <ShoppingCart className="size-4 shrink-0" strokeWidth={2} />
+                                                Add to cart
                                             </button>
                                             <button
+                                                type="button"
                                                 onClick={() => removeFromWishlist(product.id)}
-                                                className="w-10 h-10 flex items-center justify-center border border-gray-100 bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 rounded-xl transition-all active:scale-95"
+                                                className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand-gray-border bg-brand-paper text-brand-muted transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-500 active:scale-95"
                                                 title="Remove from wishlist"
                                             >
-                                                <FiTrash2 className="w-4 h-4" />
+                                                <Trash2 className="size-4" strokeWidth={2} />
                                             </button>
                                         </div>
                                     </div>

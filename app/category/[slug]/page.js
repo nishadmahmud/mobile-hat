@@ -3,14 +3,13 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { FiSearch } from 'react-icons/fi';
 import { getCategoriesFromServer, getCategoryWiseProducts, getProductsBySubcategory } from '../../../lib/api';
 import CategorySidebar from '../../../components/Category/CategorySidebar';
 import ProductGrid from '../../../components/Category/ProductGrid';
 
-/** Synced with ProductInfo (`applex_last_category_context`) for brand links back from PDP */
-const APLEX_LAST_CATEGORY_STORAGE_KEY = 'applex_last_category_context';
+/** Synced with ProductInfo (`mobile_hat_last_category_context`) for brand links back from PDP */
+const APLEX_LAST_CATEGORY_STORAGE_KEY = 'mobile_hat_last_category_context';
 
 const batteryRanges = [
     { label: '96-100%', min: 96, max: 100 },
@@ -82,7 +81,6 @@ export default function CategoryPage() {
     const [allProducts, setAllProducts] = useState([]);
     const [filterOptions, setFilterOptions] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [bannerImage, setBannerImage] = useState("https://images.unsplash.com/photo-1616348436168-de43ad0db179?q=80&w=2000&auto=format&fit=crop");
 
     // Filter State
     const [selectedBrands, setSelectedBrands] = useState(() => {
@@ -172,12 +170,6 @@ export default function CategoryPage() {
                                 } else {
                                     setCategoryName(found.name);
                                 }
-                            }
-
-                            // Use banner from API with fallbacks
-                            const apiBanner = found.banner || found.banner_image || found.image_path || found.image_url;
-                            if (apiBanner) {
-                                setBannerImage(typeof apiBanner === 'string' ? apiBanner.trim() : apiBanner);
                             }
                         }
                     } else {
@@ -522,159 +514,184 @@ export default function CategoryPage() {
     }, [filteredProducts, validCurrentPage, itemsPerPage]);
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-16">
-            <div className="max-w-[1550px] mx-auto px-4 md:px-8 py-6 md:py-8">
+        <div className="min-h-screen bg-brand-paper pb-16 md:pb-20">
+            <div className="max-w-[1550px] mx-auto px-4 pb-4 pt-4 md:px-8 md:pt-8">
 
-                {/* Top Banner Image */}
-                <div className="w-full relative rounded-2xl md:rounded-3xl overflow-hidden mb-6 md:mb-8" style={{ aspectRatio: '24/5' }}>
-                    <Image
-                        src={bannerImage}
-                        alt={`${categoryName} Banner`}
-                        fill
-                        unoptimized
-                        className="object-cover"
-                    />
-                </div>
+                {/* Category title — text only, short on desktop and mobile */}
+                <header className="mb-4 rounded-2xl border border-brand-gray-border bg-gradient-to-br from-brand-navy via-brand-navy to-brand-navy-deep px-4 py-3 shadow-[0_12px_32px_rgba(30,45,74,0.12)] md:mb-5 md:rounded-3xl md:px-5 md:py-3.5">
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-brand-yellow md:text-[10px]">Collection</p>
+                    <h1 className="mt-0.5 text-lg font-black uppercase tracking-tight text-white md:text-xl">{categoryName}</h1>
+                    {!isLoading ? (
+                        <p className="mt-1 text-[11px] font-semibold text-white/75 md:text-xs">
+                            {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
+                            {filteredProducts.length !== allProducts.length && allProducts.length > 0
+                                ? ` · ${allProducts.length} in category`
+                                : null}
+                        </p>
+                    ) : (
+                        <p className="mt-1 text-[11px] text-white/60 md:text-xs">Loading…</p>
+                    )}
+                </header>
 
                 {/* Breadcrumbs */}
-                <div className="text-[12px] md:text-sm text-gray-500 mb-6 md:mb-10 flex items-center gap-2 font-medium">
-                    <Link href="/" className="hover:text-brand-blue transition-colors">Home</Link>
-                    <span>/</span>
-                    <span className="hover:text-brand-blue transition-colors cursor-pointer">Categories</span>
-                    <span>/</span>
-                    <span className="text-brand-blue font-bold capitalize">{categoryName}</span>
-                </div>
+                <nav
+                    className="mb-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] font-semibold text-brand-muted md:mb-6 md:text-sm"
+                    aria-label="Breadcrumb"
+                >
+                    <Link href="/" className="transition-colors hover:text-brand-navy">
+                        Home
+                    </Link>
+                    <span className="text-brand-gray-border select-none" aria-hidden>
+                        /
+                    </span>
+                    <Link href="/categories" className="transition-colors hover:text-brand-navy">
+                        Categories
+                    </Link>
+                    <span className="text-brand-gray-border select-none" aria-hidden>
+                        /
+                    </span>
+                    <span className="font-black uppercase tracking-wide text-brand-navy">{categoryName}</span>
+                </nav>
 
-                <div className="flex flex-col lg:flex-row gap-0 lg:gap-8 pt-2 lg:pt-0">
-
-                    {/* Sidebar (Filters) - Left Side on Desktop */}
-                    <aside className="lg:w-1/4 order-1">
-                        <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight uppercase mb-6 md:mb-8">
-                            {categoryName}
-                        </h2>
-                        <CategorySidebar
-                            isOpen={isMobileFilterOpen}
-                            onClose={() => setIsMobileFilterOpen(false)}
-                            derivedFilters={derivedFilters}
-                            globalMinPrice={derivedFilters.globalMinPrice}
-                            globalMaxPrice={derivedFilters.globalMaxPrice}
-                            selectedPrice={selectedPrice}
-                            setSelectedPrice={setSelectedPrice}
-                            selectedStorage={selectedStorage}
-                            setSelectedStorage={setSelectedStorage}
-                            selectedRegion={selectedRegion}
-                            setSelectedRegion={setSelectedRegion}
-                            selectedColor={selectedColor}
-                            setSelectedColor={setSelectedColor}
-                            selectedAvailability={selectedAvailability}
-                            setSelectedAvailability={setSelectedAvailability}
-                            selectedExtraFilters={selectedExtraFilters}
-                            setSelectedExtraFilters={setSelectedExtraFilters}
-                        />
-                    </aside>
-
-                    {/* Main Content (Product Grid) - Right Side on Desktop */}
-                    <main className="lg:w-3/4 order-2">
-                        {categoryName === 'Used Phone' && (
-                            <div className="mb-6">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wider">Battery Health</h3>
-                                <div className="overflow-x-auto pb-2 scrollbar-hide">
-                                    <div className="flex items-center gap-2 min-w-max">
-                                        {batteryRanges.map((range) => (
-                                            <button
-                                                key={range.label}
-                                                onClick={() => setSelectedBatteryRange(
+                <main className="w-full min-w-0">
+                    {categoryName === "Used Phone" && (
+                        <div className="mb-4 grid gap-2 sm:mb-6 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-4">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-navy sm:pt-1">Battery</span>
+                            <div className="overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                                <div className="flex min-w-max items-center gap-2">
+                                    {batteryRanges.map((range) => (
+                                        <button
+                                            key={range.label}
+                                            type="button"
+                                            onClick={() =>
+                                                setSelectedBatteryRange(
                                                     selectedBatteryRange?.label === range.label ? null : range
-                                                )}
-                                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all border ${selectedBatteryRange?.label === range.label
-                                                        ? "bg-brand-blue text-white border-brand-blue shadow-md"
-                                                        : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50"
-                                                    }`}
-                                            >
-                                                {range.label}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                        <div className="mb-6 md:mb-8">
-                            <div className="w-full relative">
-                                <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                <input
-                                    type="text"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder={`Search ${categoryName.toLowerCase()}...`}
-                                    className="w-full h-12 md:h-14 rounded-2xl border border-gray-300 bg-white pl-11 pr-4 text-sm md:text-base outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-shadow"
-                                />
-                            </div>
-                            {searchQuery.trim() && (
-                                <div className="mt-2 text-xs md:text-sm text-gray-500 font-medium">
-                                    Showing results for <span className="font-bold text-gray-900">&quot;{searchQuery.trim()}&quot;</span>
-                                </div>
-                            )}
-                        </div>
-
-                        {isLoading ? (
-                            <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-2xl border border-gray-200 border-dashed">
-                                <div className="w-8 h-8 border-4 border-brand-blue/20 border-t-brand-blue rounded-full animate-spin mb-4"></div>
-                                <p className="text-gray-400 font-medium">Loading products...</p>
-                            </div>
-                        ) : paginatedProductsForScreen.length > 0 ? (
-                            <ProductGrid
-                                products={paginatedProductsForScreen}
-                                onOpenFilter={() => setIsMobileFilterOpen(true)}
-                                brandsList={derivedFilters.brandsList}
-                                activeBrand={selectedBrands[0] || 'All'}
-                                onSelectBrand={(b) => setSelectedBrands([b])}
-                                totalItems={filteredProducts.length}
-                                showUsedTag={isUsedPhoneCategory}
-                            />
-                        ) : (
-                            <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-2xl border border-gray-200 border-dashed">
-                                <p className="text-gray-400 font-medium">
-                                    {allProducts.length === 0 
-                                        ? `No products found in ${categoryName}.` 
-                                        : "No products match your active filters."}
-                                </p>
-                            </div>
-                        )}
-
-                        {/* Pagination Overlay logic is now entirely Client-side aware */}
-                        {!isLoading && totalPages > 1 && (
-                            <div className="flex flex-wrap items-center justify-center gap-2 mt-10">
-                                {Array.from({ length: totalPages }, (_, i) => {
-                                    let pageNum = i + 1;
-
-                                    // Basic slicing window to prevent hundred page spans wrapping.
-                                    if (totalPages > 6) {
-                                        if (pageNum < validCurrentPage - 2 && pageNum !== 1) return null;
-                                        if (pageNum > validCurrentPage + 2 && pageNum !== totalPages) return null;
-                                        if (pageNum === validCurrentPage - 2 && pageNum > 2) return <span key={`ellipsis-${pageNum}`} className="px-2 text-gray-400">...</span>;
-                                        if (pageNum === validCurrentPage + 2 && pageNum < totalPages - 1) return <span key={`ellipsis-${pageNum}`} className="px-2 text-gray-400">...</span>;
-                                    }
-
-                                    return (
-                                        <Link
-                                            key={pageNum}
-                                            href={buildCategoryPageHref(pageNum)}
-                                            scroll={true}
-                                            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${pageNum === validCurrentPage
-                                                ? 'bg-brand-blue text-white shadow-md'
-                                                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-                                                }`}
+                                                )
+                                            }
+                                            className={`shrink-0 rounded-lg border px-3 py-2 text-xs font-bold transition-all md:rounded-xl md:px-4 md:text-sm ${
+                                                selectedBatteryRange?.label === range.label
+                                                    ? "border-brand-navy bg-brand-navy text-white shadow-md shadow-brand-navy/20"
+                                                    : "border-brand-gray-border bg-white text-brand-navy hover:border-brand-yellow"
+                                            }`}
                                         >
-                                            {pageNum}
-                                        </Link>
-                                    )
-                                })}
+                                            {range.label}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        )}
-                    </main>
+                        </div>
+                    )}
 
-                </div>
+                    {/* Search — minimal “command line” */}
+                    <div className="mb-4 md:mb-8">
+                        <label className="group flex items-center gap-2 border-b-2 border-brand-navy/15 pb-2 transition-colors focus-within:border-brand-navy md:gap-3 md:pb-3">
+                            <FiSearch className="h-4 w-4 shrink-0 text-brand-navy/50 group-focus-within:text-brand-navy md:h-5 md:w-5" aria-hidden />
+                            <input
+                                type="search"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder={`Search in ${categoryName.toLowerCase()}…`}
+                                className="min-w-0 flex-1 border-0 bg-transparent text-sm font-medium text-brand-navy outline-none placeholder:text-brand-muted/70 md:text-base lg:text-lg"
+                            />
+                        </label>
+                        {searchQuery.trim() ? (
+                            <p className="mt-2 text-xs font-medium text-brand-muted md:text-sm">
+                                Matching{" "}
+                                <span className="font-black text-brand-navy">&quot;{searchQuery.trim()}&quot;</span>
+                            </p>
+                        ) : null}
+                    </div>
+
+                    {isLoading ? (
+                        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-brand-gray-border bg-white py-20 shadow-inner md:py-24">
+                            <div
+                                className="mb-4 h-10 w-10 animate-spin rounded-full border-[3px] border-brand-navy/20 border-t-brand-navy"
+                                role="status"
+                                aria-label="Loading"
+                            />
+                            <p className="text-sm font-bold uppercase tracking-wider text-brand-muted">Loading products…</p>
+                        </div>
+                    ) : paginatedProductsForScreen.length > 0 ? (
+                        <ProductGrid
+                            products={paginatedProductsForScreen}
+                            onOpenFilter={() => setIsMobileFilterOpen(true)}
+                            brandsList={derivedFilters.brandsList}
+                            activeBrand={selectedBrands[0] || "All"}
+                            onSelectBrand={(b) => setSelectedBrands([b])}
+                            totalItems={filteredProducts.length}
+                            showUsedTag={isUsedPhoneCategory}
+                        />
+                    ) : (
+                        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-brand-gray-border bg-white px-6 py-20 text-center shadow-[0_8px_24px_rgba(30,45,74,0.04)]">
+                            <p className="max-w-md text-sm font-semibold leading-relaxed text-brand-muted">
+                                {allProducts.length === 0
+                                    ? `No products in ${categoryName} yet. Try another collection.`
+                                    : "No products match your filters. Reset filters or broaden your search."}
+                            </p>
+                        </div>
+                    )}
+
+                    {!isLoading && totalPages > 1 ? (
+                        <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
+                            {Array.from({ length: totalPages }, (_, i) => {
+                                let pageNum = i + 1;
+
+                                if (totalPages > 6) {
+                                    if (pageNum < validCurrentPage - 2 && pageNum !== 1) return null;
+                                    if (pageNum > validCurrentPage + 2 && pageNum !== totalPages) return null;
+                                    if (pageNum === validCurrentPage - 2 && pageNum > 2)
+                                        return (
+                                            <span key={`ellipsis-before-${pageNum}`} className="px-2 text-brand-muted">
+                                                …
+                                            </span>
+                                        );
+                                    if (pageNum === validCurrentPage + 2 && pageNum < totalPages - 1)
+                                        return (
+                                            <span key={`ellipsis-after-${pageNum}`} className="px-2 text-brand-muted">
+                                                …
+                                            </span>
+                                        );
+                                }
+
+                                return (
+                                    <Link
+                                        key={pageNum}
+                                        href={buildCategoryPageHref(pageNum)}
+                                        scroll={true}
+                                        className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition-colors ${
+                                            pageNum === validCurrentPage
+                                                ? "bg-brand-navy text-white shadow-md shadow-brand-navy/25"
+                                                : "border border-brand-gray-border bg-white text-brand-navy hover:border-brand-yellow"
+                                        }`}
+                                    >
+                                        {pageNum}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    ) : null}
+                </main>
             </div>
+
+            <CategorySidebar
+                isOpen={isMobileFilterOpen}
+                onClose={() => setIsMobileFilterOpen(false)}
+                derivedFilters={derivedFilters}
+                globalMinPrice={derivedFilters.globalMinPrice}
+                globalMaxPrice={derivedFilters.globalMaxPrice}
+                selectedPrice={selectedPrice}
+                setSelectedPrice={setSelectedPrice}
+                selectedStorage={selectedStorage}
+                setSelectedStorage={setSelectedStorage}
+                selectedRegion={selectedRegion}
+                setSelectedRegion={setSelectedRegion}
+                selectedColor={selectedColor}
+                setSelectedColor={setSelectedColor}
+                selectedAvailability={selectedAvailability}
+                setSelectedAvailability={setSelectedAvailability}
+                selectedExtraFilters={selectedExtraFilters}
+                setSelectedExtraFilters={setSelectedExtraFilters}
+            />
         </div>
     );
 }

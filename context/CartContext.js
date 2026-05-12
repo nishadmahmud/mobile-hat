@@ -12,7 +12,7 @@ export function CartProvider({ children }) {
     // Load cart from localStorage on mount
     useEffect(() => {
         try {
-            const storedCart = localStorage.getItem("applex_cart");
+            const storedCart = localStorage.getItem("mobile_hat_cart");
             if (storedCart) {
                 setCartItems(JSON.parse(storedCart));
             }
@@ -24,7 +24,7 @@ export function CartProvider({ children }) {
     // Save cart to localStorage whenever it changes
     useEffect(() => {
         try {
-            localStorage.setItem("applex_cart", JSON.stringify(cartItems));
+            localStorage.setItem("mobile_hat_cart", JSON.stringify(cartItems));
         } catch (error) {
             console.error("Failed to save cart to local storage", error);
         }

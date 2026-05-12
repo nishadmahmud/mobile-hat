@@ -1,6 +1,6 @@
 export const metadata = {
-    title: 'Track Your Order | Applex',
-    description: 'Track the real-time status of your order at Applex using your invoice ID.',
+    title: 'Track Your Order | Mobile Hat',
+    description: 'Track the real-time status of your order at Mobile Hat using your invoice ID.',
 };
 
 export default function TrackOrderLayout({ children }) {

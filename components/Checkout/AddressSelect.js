@@ -48,12 +48,12 @@ export default function AddressSelect({
     const Option = (props) => (
         <components.Option {...props}>
             {props.data.type === "state" ? (
-                <div className="flex w-full items-center justify-between font-bold text-gray-800">
+                <div className="flex w-full items-center justify-between font-bold text-brand-navy">
                     <span>{props.data.label} (District)</span>
                     <ChevronRight size={16} />
                 </div>
             ) : (
-                <span className="pl-4 text-gray-600">{props.data.label}</span>
+                <span className="pl-4 text-brand-muted">{props.data.label}</span>
             )}
         </components.Option>
     );
@@ -133,12 +133,12 @@ export default function AddressSelect({
 
     return (
         <div className="cursor-pointer relative z-50">
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <label className="mb-2 block text-sm font-semibold text-brand-navy">
                 Select Address <span className="text-red-500">*</span>
             </label>
 
             <Select
-                className="text-black text-sm"
+                className="text-brand-navy text-sm"
                 options={options}
                 components={{ Option }}
                 value={getValue()}
@@ -156,11 +156,11 @@ export default function AddressSelect({
                         ...base,
                         padding: '2px',
                         borderRadius: '0.5rem',
-                        borderColor: state.isFocused ? '#FF2D2D' : '#e5e7eb',
-                        boxShadow: state.isFocused ? '0 0 0 1px #FF2D2D' : 'none',
+                        borderColor: state.isFocused ? '#1e2d4a' : '#e8e4df',
+                        boxShadow: state.isFocused ? '0 0 0 3px rgba(30, 45, 74, 0.12)' : 'none',
                         fontSize: '16px',
                         '&:hover': {
-                            borderColor: '#d1d5db'
+                            borderColor: '#e8e4df'
                         }
                     }),
                     input: (base) => ({
@@ -177,21 +177,21 @@ export default function AddressSelect({
                     }),
                     multiValue: (base) => ({
                         ...base,
-                        backgroundColor: '#fff3f3',
-                        border: '1px solid #fecaca',
+                        backgroundColor: '#f8f6f3',
+                        border: '1px solid #e8e4df',
                         borderRadius: '6px',
                     }),
                     multiValueLabel: (base) => ({
                         ...base,
-                        color: '#991b1b',
+                        color: '#1e2d4a',
                         fontWeight: '500',
                     }),
                     option: (base, state) => ({
                         ...base,
-                        backgroundColor: state.isFocused ? '#fff5f5' : 'white',
+                        backgroundColor: state.isFocused ? '#f8f6f3' : 'white',
                         cursor: 'pointer',
                         '&:active': {
-                            backgroundColor: '#ffe4e4'
+                            backgroundColor: '#f0ebe4'
                         }
                     }),
                 }}

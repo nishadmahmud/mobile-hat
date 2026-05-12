@@ -24,7 +24,7 @@ export function CompareProvider({ children }) {
     useEffect(() => {
         if (typeof window === "undefined") return;
         try {
-            const stored = localStorage.getItem("applex_compare");
+            const stored = localStorage.getItem("mobile_hat_compare");
             if (stored) {
                 const parsed = JSON.parse(stored);
                 if (Array.isArray(parsed)) {
@@ -40,7 +40,7 @@ export function CompareProvider({ children }) {
     useEffect(() => {
         if (typeof window === "undefined") return;
         try {
-            localStorage.setItem("applex_compare", JSON.stringify(items));
+            localStorage.setItem("mobile_hat_compare", JSON.stringify(items));
         } catch {
             // ignore storage errors
         }

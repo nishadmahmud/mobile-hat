@@ -5,8 +5,8 @@ import Link from "next/link";
 import { FiMessageCircle, FiShuffle, FiX } from "react-icons/fi";
 import { FaWhatsapp, FaFacebookMessenger } from "react-icons/fa";
 
-const WHATSAPP_URL = "https://wa.me/8801980803060";
-const MESSENGER_URL = "https://www.facebook.com/Applex.bd";
+const WHATSAPP_URL = process.env.NEXT_PUBLIC_WHATSAPP_URL;
+const MESSENGER_URL = process.env.NEXT_PUBLIC_MESSENGER_URL;
 
 export default function FloatingQuickActions() {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,25 +41,37 @@ export default function FloatingQuickActions() {
 
       <div className="relative">
         {isOpen && (
-          <div className="absolute right-12 bottom-0 bg-white border border-gray-200 rounded-xl shadow-xl p-1.5 flex flex-col gap-1 min-w-[150px]">
+          <div className="absolute right-12 bottom-0 flex min-w-[150px] flex-col gap-1 rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl">
+            {WHATSAPP_URL ? (
             <a
               href={WHATSAPP_URL}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-semibold text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
+              className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-semibold text-gray-700 transition-colors hover:bg-green-50 hover:text-green-700"
             >
-              <FaWhatsapp className="w-4 h-4 text-green-600" />
+              <FaWhatsapp className="h-4 w-4 text-green-600" />
               WhatsApp
             </a>
+            ) : null}
+            {MESSENGER_URL ? (
             <a
               href={MESSENGER_URL}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-semibold text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+              className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-semibold text-gray-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
             >
-              <FaFacebookMessenger className="w-4 h-4 text-blue-600" />
+              <FaFacebookMessenger className="h-4 w-4 text-blue-600" />
               Messenger
             </a>
+            ) : null}
+            {!WHATSAPP_URL && !MESSENGER_URL ? (
+              <Link
+                href="/contact"
+                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-semibold text-gray-700 transition-colors hover:bg-brand-paper hover:text-brand-navy"
+              >
+                Contact us
+              </Link>
+            ) : null}
           </div>
         )}
 

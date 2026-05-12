@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { ChevronLeft } from 'lucide-react';
 import ProductGallery from '../../../components/Product/ProductGallery';
 import ProductInfo from '../../../components/Product/ProductInfo';
 import ProductTabs from '../../../components/Product/ProductTabs';
-import ApplexCare from '../../../components/Product/ApplexCare';
 import ProductCard from '../../../components/Shared/PremiumProductCard';
 import { getProductById, getRelatedProduct } from '../../../lib/api';
 
@@ -88,18 +88,6 @@ export default function ProductDetailsPage() {
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [variantImages, setVariantImages] = useState(null);
     const [fromCategory, setFromCategory] = useState(null); // { name, slug }
-    const [selectedCarePlans, setSelectedCarePlans] = useState([]);
-    const [emiOpenTrigger, setEmiOpenTrigger] = useState(0);
-
-    const toggleCarePlan = (plan) => {
-        setSelectedCarePlans(prev => {
-            const exists = prev.find(p => p.id === plan.id);
-            if (exists) {
-                return prev.filter(p => p.id !== plan.id);
-            }
-            return [...prev, plan];
-        });
-    };
 
     useEffect(() => {
         // Check if we came from a category page
@@ -123,7 +111,7 @@ export default function ProductDetailsPage() {
         // Instant paint: use lightweight card/category payload if available.
         try {
             if (typeof window !== 'undefined') {
-                const rawSeed = sessionStorage.getItem(`applex_pdp_seed_${productId}`);
+                const rawSeed = sessionStorage.getItem(`mobile_hat_pdp_seed_${productId}`);
                 if (rawSeed) {
                     const seed = JSON.parse(rawSeed);
                     const mappedSeed = mapSeedProductForPdp(seed);
@@ -278,7 +266,7 @@ export default function ProductDetailsPage() {
         if (!productData || !productData.id) return;
         
         try {
-            const stored = localStorage.getItem('applex_recently_viewed');
+            const stored = localStorage.getItem('mobile_hat_recently_viewed');
             let list = stored ? JSON.parse(stored) : [];
             
             // Remove current product if it exists to bring it to top
@@ -297,7 +285,7 @@ export default function ProductDetailsPage() {
             
             // Limit to 10
             const truncated = list.slice(0, 10);
-            localStorage.setItem('applex_recently_viewed', JSON.stringify(truncated));
+            localStorage.setItem('mobile_hat_recently_viewed', JSON.stringify(truncated));
             setRecentlyViewed(truncated);
         } catch (e) {
             console.error("Failed to update recently viewed", e);
@@ -322,71 +310,91 @@ export default function ProductDetailsPage() {
         normalizedProductCategorySlug === 'used-phone' ||
         normalizedProductCategoryName === 'used phone';
 
+    const categoryBackHref =
+        productData?.category?.slug != null && String(productData.category.slug).length > 0
+            ? `/category/${productData.category.slug}`
+            : null;
+
     return (
-        <div className="bg-white min-h-screen pb-12">
-            <div className="bg-white border-b border-gray-100 py-3 md:py-4 mb-6 md:mb-8">
-                <div className="max-w-[1550px] mx-auto px-4 md:px-6">
-                    <div className="text-[10px] md:text-[12px] text-gray-400 flex items-center gap-2 font-black uppercase tracking-widest">
-                        <Link href="/" className="hover:text-blue-600 cursor-pointer transition-colors">Home</Link>
-                        <span className="text-gray-300">/</span>
-                        {productData?.category?.name && (
-                            <>
+        <div className="min-h-screen bg-brand-paper pb-12">
+            <div className="mb-6 border-b border-brand-gray-border/80 bg-white md:mb-8">
+                <div className="mx-auto max-w-[1550px] px-4 py-4 md:px-8 md:py-5">
+                    <div className="flex flex-col gap-3 md:gap-4">
+                        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-2">
+                            {categoryBackHref ? (
                                 <Link
-                                    href={`/category/${productData.category.slug}`}
-                                    className="hover:text-blue-600 cursor-pointer transition-colors"
+                                    href={categoryBackHref}
+                                    className="inline-flex shrink-0 items-center gap-1 rounded-full border border-brand-gray-border bg-brand-paper px-2.5 py-1.5 text-[10px] font-black uppercase tracking-widest text-brand-navy transition-colors hover:border-brand-navy hover:bg-white md:px-3 md:text-[11px]"
                                 >
-                                    {productData.category.name}
+                                    <ChevronLeft className="size-3.5 shrink-0 md:size-4" strokeWidth={2.5} aria-hidden />
+                                    Back
                                 </Link>
-                                <span className="text-gray-300">/</span>
-                            </>
-                        )}
-                        <span className="text-blue-600 truncate">{productName}</span>
+                            ) : null}
+                            <nav
+                                className="flex min-w-0 flex-1 items-center gap-x-2 gap-y-1 text-[10px] font-black uppercase tracking-widest text-brand-muted md:text-xs"
+                                aria-label="Breadcrumb"
+                            >
+                                <Link href="/" className="shrink-0 transition-colors hover:text-brand-navy">
+                                    Home
+                                </Link>
+                                <span className="shrink-0 text-brand-gray-border" aria-hidden>
+                                    /
+                                </span>
+                                {productData?.category?.name && categoryBackHref ? (
+                                    <>
+                                        <Link
+                                            href={categoryBackHref}
+                                            className="min-w-0 shrink truncate transition-colors hover:text-brand-navy"
+                                        >
+                                            {productData.category.name}
+                                        </Link>
+                                        <span className="shrink-0 text-brand-gray-border" aria-hidden>
+                                            /
+                                        </span>
+                                    </>
+                                ) : null}
+                                <span className="min-w-0 truncate font-black text-brand-navy">{productName}</span>
+                            </nav>
+                        </div>
+                        <h1 className="text-xl font-black uppercase leading-tight tracking-[0.06em] text-brand-navy md:text-2xl md:tracking-[0.08em]">
+                            {productName}
+                        </h1>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-[1550px] mx-auto px-4 md:px-6">
+            <div className="mx-auto max-w-[1550px] px-4 md:px-8">
 
                 {isLoading && !productData ? (
-                    <div className="py-32 flex flex-col items-center justify-center">
-                        <div className="w-12 h-12 border-4 border-gray-100 border-t-blue-600 rounded-full animate-spin mb-6"></div>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Gathering details...</p>
+                    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-brand-gray-border bg-white py-28">
+                        <div
+                            className="mb-6 h-12 w-12 animate-spin rounded-full border-4 border-brand-navy/15 border-t-brand-navy"
+                            role="status"
+                            aria-label="Loading"
+                        />
+                        <p className="text-xs font-bold uppercase tracking-widest text-brand-muted">Gathering details…</p>
                     </div>
                 ) : error || !productData ? (
-                    <div className="py-20 text-center">
-                        <p className="text-sm text-red-500">{error || 'Product not found.'}</p>
+                    <div className="rounded-2xl border border-dashed border-brand-gray-border bg-white py-20 text-center">
+                        <p className="text-sm font-semibold text-red-600">{error || 'Product not found.'}</p>
                     </div>
                 ) : (
                     <>
-                        {/* 3-Column Top Layout */}
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
-                            {/* Col 1: Gallery (4 Columns) */}
-                            <div className="w-full lg:col-span-4 shrink-0 lg:sticky lg:top-32 self-start">
+                        {/* Mobile: gallery first under title band; desktop: gallery left + sticky rail right */}
+                        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+                            <div className="order-1 min-w-0 flex-1">
                                 <ProductGallery images={galleryImages} showUsedTag={isUsedPhoneProduct} />
                             </div>
 
-                            {/* Col 2: Info (5 Columns) */}
-                            <div className="w-full lg:col-span-5">
-                                <ProductInfo
-                                    product={productData}
-                                    onVariantImageChange={setVariantImages}
-                                    selectedCarePlans={selectedCarePlans}
-                                    toggleCarePlan={toggleCarePlan}
-                                    onOpenEmiModal={() => setEmiOpenTrigger((prev) => prev + 1)}
-                                    emiOpenTrigger={emiOpenTrigger}
-                                />
-                            </div>
-
-                            {/* Col 3: Applex Care (3 Columns - Desktop Only) */}
-                            <div className="w-full lg:col-span-3 hidden lg:block">
-                                <ApplexCare 
-                                    product={productData}
-                                    currentPrice={productData.rawPrice}
-                                    selectedCarePlans={selectedCarePlans}
-                                    toggleCarePlan={toggleCarePlan}
-                                    openEmiTrigger={emiOpenTrigger}
-                                />
-                            </div>
+                            <aside className="order-2 w-full shrink-0 lg:sticky lg:top-24 lg:w-[min(100%,460px)] xl:w-[min(100%,500px)]">
+                                <div className="rounded-2xl border border-brand-gray-border/80 bg-white p-5 shadow-[0_12px_40px_rgba(30,45,74,0.06)] md:p-6">
+                                    <ProductInfo
+                                        product={productData}
+                                        suppressProductTitle
+                                        onVariantImageChange={setVariantImages}
+                                    />
+                                </div>
+                            </aside>
                         </div>
 
                         {/* Bottom: Tabs & Sidebar */}
@@ -399,13 +407,23 @@ export default function ProductDetailsPage() {
 
                         {/* Related Products Section */}
                         {relatedProducts.length > 0 && (
-                            <div className="mt-16 md:mt-24 pt-12 border-t border-gray-200">
-                                <h2 className="text-2xl md:text-3xl font-extrabold text-gray-800 mb-8 text-center md:text-left">
-                                    Related Products
-                                </h2>
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
-                                    {relatedProducts.map(product => (
-                                        <ProductCard key={product.id} product={product} />
+                            <div className="mt-16 border-t border-brand-gray-border/80 pt-10 md:mt-24 md:pt-12">
+                                <div className="mb-5 flex flex-col gap-1 md:mb-6 md:flex-row md:items-end md:justify-between">
+                                    <div>
+                                        <h2 className="text-xl font-black uppercase tracking-[0.12em] text-brand-navy md:text-2xl md:tracking-[0.14em]">
+                                            Related products
+                                        </h2>
+                                        <p className="mt-1 text-sm text-brand-muted">More you might like from our catalog.</p>
+                                    </div>
+                                </div>
+                                <div className="no-scrollbar -mx-1 flex gap-3 overflow-x-auto pb-2 pt-1 md:gap-4 md:pb-3">
+                                    {relatedProducts.map((product) => (
+                                        <div
+                                            key={product.id}
+                                            className="w-[min(260px,78vw)] shrink-0 sm:w-[240px] md:w-[260px]"
+                                        >
+                                            <ProductCard product={product} />
+                                        </div>
                                     ))}
                                 </div>
                             </div>

@@ -246,7 +246,7 @@ export default function ProductExtras({ product, selectedCarePlans, toggleCarePl
     const allExtras = [
         {
             id: "care",
-            label: "Applex Care",
+            label: "Device Care",
             description: selectedCarePlans.length > 0 ? `${selectedCarePlans.length} Selected` : "Protect Now",
             icon: FiShield,
             badge: selectedCarePlans.length > 0
@@ -280,7 +280,7 @@ export default function ProductExtras({ product, selectedCarePlans, toggleCarePl
                 const productPrice = currentPrice;
 
                 const defaultPlans = [
-                    { id: 'care_plus', name: 'Applex Care+ 1 Year', detail: "Covers hardware and software issues", price: Math.round(productPrice * 0.05) },
+                    { id: 'care_plus', name: 'Care+ 1 Year', detail: "Covers hardware and software issues", price: Math.round(productPrice * 0.05) },
                     { id: 'screen_protection', name: 'Screen Protection', detail: "One-time screen replacement", price: Math.round(productPrice * 0.07) },
                 ];
 
@@ -291,7 +291,7 @@ export default function ProductExtras({ product, selectedCarePlans, toggleCarePl
                 return (
                     <div className="space-y-6 flex flex-col h-full">
                         <div>
-                            <h3 className="text-3xl font-black text-gray-900 tracking-tighter">Applex Care</h3>
+                            <h3 className="text-3xl font-black text-gray-900 tracking-tighter">Device Care</h3>
                             <p className="text-sm font-bold text-gray-400">Choose the best protection for your device</p>
                         </div>
                         

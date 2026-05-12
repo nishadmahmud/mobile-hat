@@ -41,7 +41,7 @@ export default function BlogPage() {
             <div className="bg-blue-600 py-16 md:py-24">
                 <div className="max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
-                        Applex Insights
+                        Mobile Hat Insights
                     </h1>
                     <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto font-medium">
                         Your go-to source for smartphone reviews, tech guides, and industry news.

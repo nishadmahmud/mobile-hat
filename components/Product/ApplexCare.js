@@ -1,18 +1,14 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
-import { 
-    FiShield, 
-    FiCheckCircle, 
-    FiTruck, 
-    FiSmartphone, 
-    FiCreditCard, 
-    FiX,
-} from 'react-icons/fi';
+import { Truck, CreditCard, X, CircleCheck, Shield } from 'lucide-react';
 import { bankEmiData } from '../../lib/emiData';
 
-const APPLEX_CARE_PLUS_ONE_YEAR_IMG =
+const CARE_PLUS_ONE_YEAR_IMG =
     '/product-details-svg/1%20YER%20garanty%20ff%20balk.png';
+
+/** Set to `true` when the Care+ plan cards (warranty add-ons) should show again. */
+const SHOW_CARE_PLAN_CARDS = false;
 
 // ── FULL Bank EMI Data ──────────────────────────────────────────────
 
@@ -48,23 +44,25 @@ function EMICalculator({ currentPrice }) {
 
     return (
         <div className="space-y-4">
-            <h3 className="font-bold text-lg text-gray-900 tracking-tight">EMI Options</h3>
+            <h3 className="text-lg font-bold tracking-tight text-brand-navy">EMI Options</h3>
 
-            <div className="flex flex-row gap-2 md:gap-4 h-[500px] md:h-[600px]">
+            <div className="flex min-h-0 flex-row gap-2 md:gap-4 h-[min(480px,68vh)] md:h-[min(560px,72vh)]">
                 {/* Left: Bank List */}
-                <div className="w-[110px] md:w-1/3 border border-gray-100 rounded-2xl flex flex-col h-full sticky top-0 overflow-hidden">
-                    <div className="p-3 bg-gray-50 border-b border-gray-100 font-black text-[10px] text-gray-400 uppercase tracking-widest sticky top-0 z-10">
+                <div className="flex h-full w-[110px] shrink-0 flex-col overflow-hidden rounded-2xl border border-brand-gray-border md:w-1/3">
+                    <div className="sticky top-0 z-10 border-b border-brand-gray-border bg-brand-paper p-3 font-black text-[10px] uppercase tracking-widest text-brand-muted">
                         Select Bank
                     </div>
-                    <div className="overflow-y-auto flex-1 bg-white">
+                    <div className="min-h-0 flex-1 overflow-y-auto bg-white">
                         {bankEmiData.map((bank, idx) => (
                             <button
                                 key={idx}
+                                type="button"
                                 onClick={() => setSelectedBank(bank)}
-                                className={`w-full flex flex-col md:flex-row items-center md:items-center gap-1 md:gap-3 p-3 text-center md:text-left border-b border-gray-50 last:border-0 transition-all ${selectedBank.bank === bank.bank
-                                    ? 'bg-blue-50 border-r-4 md:border-r-0 md:border-l-4 border-blue-600'
-                                    : 'hover:bg-gray-50'
-                                    }`}
+                                className={`flex w-full flex-col items-center gap-1 border-b border-brand-gray-border/60 p-3 text-center transition-all last:border-0 md:flex-row md:items-center md:gap-3 md:text-left ${
+                                    selectedBank.bank === bank.bank
+                                        ? "border-l-4 border-brand-navy bg-brand-paper md:border-l-4 md:border-r-0"
+                                        : "hover:bg-brand-paper/80"
+                                }`}
                             >
                                 <div className={`w-8 h-8 md:w-10 md:h-10 ${!bank.logo && bank.color} rounded-xl flex items-center justify-center text-white font-black text-xs md:text-sm flex-shrink-0 mx-auto md:mx-0 overflow-hidden bg-white shadow-sm`}>
                                     {bank.logo ? (
@@ -85,67 +83,96 @@ function EMICalculator({ currentPrice }) {
                                         </div>
                                     )}
                                 </div>
-                                <span className={`text-[10px] md:text-[13px] font-bold ${selectedBank.bank === bank.bank ? 'text-blue-600' : 'text-gray-600'} truncate w-full md:w-auto`}>{bank.bank}</span>
+                                <span
+                                    className={`w-full truncate text-[10px] font-bold md:w-auto md:text-[13px] ${
+                                        selectedBank.bank === bank.bank ? "text-brand-navy" : "text-brand-muted"
+                                    }`}
+                                >
+                                    {bank.bank}
+                                </span>
                             </button>
                         ))}
                     </div>
                 </div>
 
                 {/* Right: EMI Details */}
-                <div className="flex-1 space-y-4 h-full overflow-y-auto pr-1">
+                <div className="flex h-full min-h-0 flex-1 flex-col space-y-4 overflow-y-auto pr-1">
                     {/* Amount Input */}
-                    <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Purchase Amount</label>
+                    <div className="rounded-2xl border border-brand-gray-border bg-brand-paper p-4">
+                        <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-brand-muted">
+                            Purchase Amount
+                        </label>
                         <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-900 font-black text-lg">৳</span>
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-black text-brand-navy">৳</span>
                             <input
                                 type="number"
                                 value={customAmount}
                                 onChange={(e) => setCustomAmount(Number(e.target.value))}
-                                className="w-full py-3 px-4 pl-9 bg-white border-2 border-transparent rounded-xl text-lg font-black text-gray-900 focus:outline-none focus:border-blue-600/20 focus:ring-4 focus:ring-blue-600/5 transition-all shadow-sm"
+                                className="w-full rounded-xl border-2 border-transparent bg-white py-3 pl-9 pr-4 text-lg font-black text-brand-navy shadow-sm transition-all focus:border-brand-navy/30 focus:outline-none focus:ring-4 focus:ring-brand-navy/10"
                             />
                         </div>
                     </div>
 
                     {/* EMI Table */}
-                    <div className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
-                        <table className="w-full text-[13px] whitespace-nowrap">
-                            <thead className="bg-gray-50">
+                    <div className="overflow-hidden rounded-2xl border border-brand-gray-border shadow-sm">
+                        <table className="w-full whitespace-nowrap text-[13px]">
+                            <thead className="bg-brand-paper">
                                 <tr>
-                                    <th className="text-center p-3 font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Plan</th>
-                                    <th className="text-left p-3 font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Monthly EMI</th>
-                                    <th className="text-right p-3 font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">Total Cost</th>
+                                    <th className="border-b border-brand-gray-border p-3 text-center font-black uppercase tracking-widest text-brand-muted">
+                                        Plan
+                                    </th>
+                                    <th className="border-b border-brand-gray-border p-3 text-left font-black uppercase tracking-widest text-brand-muted">
+                                        Monthly EMI
+                                    </th>
+                                    <th className="border-b border-brand-gray-border p-3 text-right font-black uppercase tracking-widest text-brand-muted">
+                                        Total Cost
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white">
-                                {plans.length > 0 ? plans.map((plan, idx) => (
-                                    <tr key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
-                                        <td className="p-4 text-center align-middle font-black text-gray-900">
-                                            {plan.months} <span className="text-[10px] text-gray-400">Months</span>
-                                        </td>
-                                        <td className="p-4 align-middle">
-                                            <div className="flex flex-col">
-                                                <span className="text-blue-600 font-black text-sm">৳ {plan.emi.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-                                                <span className="text-[10px] font-bold text-gray-400">Charge {plan.charge}%</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-right align-middle text-gray-900 font-black">
-                                            ৳ {plan.effectiveCost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                                        </td>
-                                    </tr>
-                                )) : (
+                                {plans.length > 0 ? (
+                                    plans.map((plan, idx) => (
+                                        <tr
+                                            key={idx}
+                                            className="border-b border-brand-gray-border/60 transition-colors last:border-0 hover:bg-brand-paper/50"
+                                        >
+                                            <td className="p-4 align-middle text-center font-black text-brand-navy">
+                                                {plan.months} <span className="text-[10px] text-brand-muted">Months</span>
+                                            </td>
+                                            <td className="p-4 align-middle">
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm font-black text-brand-navy">
+                                                        ৳ {plan.emi.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                                    </span>
+                                                    <span className="text-[10px] font-bold text-brand-muted">
+                                                        Charge {plan.charge}%
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="p-4 text-right align-middle font-black text-brand-navy">
+                                                ৳ {plan.effectiveCost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
                                     <tr>
-                                        <td colSpan={3} className="p-8 text-center text-gray-400 font-bold italic uppercase tracking-tighter">No EMI plans available for this bank</td>
+                                        <td
+                                            colSpan={3}
+                                            className="p-8 text-center font-bold uppercase tracking-tighter text-brand-muted italic"
+                                        >
+                                            No EMI plans available for this bank
+                                        </td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
                     </div>
 
-                    <div className="flex items-center gap-2 p-3 bg-blue-50/50 rounded-xl border border-blue-100">
-                        <FiCheckCircle className="text-blue-600 w-4 h-4 shrink-0" />
-                        <p className="text-[11px] font-bold text-blue-600 leading-tight">
-                            EMI facility is available for purchases over ৳5,000. Terms and conditions apply based on bank policies.
+                    <div className="flex items-center gap-2 rounded-xl border border-brand-gray-border bg-brand-paper p-3">
+                        <CircleCheck className="h-4 w-4 shrink-0 text-brand-navy" strokeWidth={2} />
+                        <p className="text-[11px] font-bold leading-tight text-brand-navy">
+                            EMI facility is available for purchases over ৳5,000. Terms and conditions apply based on bank
+                            policies.
                         </p>
                     </div>
                 </div>
@@ -154,8 +181,8 @@ function EMICalculator({ currentPrice }) {
     );
 }
 
-// ── Main ApplexCare Component ───────────────────────────────────────
-export default function ApplexCare({ product, currentPrice, selectedCarePlans, toggleCarePlan, openEmiTrigger = 0 }) {
+// ── Main extended care / EMI block ──────────────────────────────────
+export default function DeviceCareEmiPanel({ product, currentPrice, selectedCarePlans, toggleCarePlan, openEmiTrigger = 0 }) {
     const [activeDrawer, setActiveDrawer] = useState(null);
     const categoryLower = (product?.category?.name || '').toLowerCase();
     const categorySlugLower = (product?.category?.slug || '').toLowerCase();
@@ -178,10 +205,10 @@ export default function ApplexCare({ product, currentPrice, selectedCarePlans, t
     const carePlansToShow = useMemo(() => {
         if (isAdapter) return [{ id: 'warranty_adapter', name: '12 Month Instant Replacement', description: 'Instant replacement for issues', price: 0 }];
         if (isCable) return [{ id: 'warranty_cable', name: '6 Month Instant Replacement', description: 'Instant replacement for issues', price: 0 }];
-        if (isLaptop) return [{ id: 'care_laptop', name: 'Applex Care+ 1 Year', description: 'Brand New Replacement Guarantee', price: Math.round(price * 0.05) }];
+        if (isLaptop) return [{ id: 'care_laptop', name: 'Care+ 1 Year', description: 'Brand New Replacement Guarantee', price: Math.round(price * 0.05) }];
         if (isPhoneCategory) return [
-            { id: 'care_phone', name: 'Applex Care+ 1 Year', description: 'Brand New Replacement Guarantee', price: Math.round(price * 0.05) },
-            { id: 'screen_care', name: 'Applex Screen Care+ : 730 days', description: 'One time display replacement', price: Math.round(price * 0.10) },
+            { id: 'care_phone', name: 'Care+ 1 Year', description: 'Brand New Replacement Guarantee', price: Math.round(price * 0.05) },
+            { id: 'screen_care', name: 'Screen Care+ : 730 days', description: 'One time display replacement', price: Math.round(price * 0.10) },
         ];
         return [{ id: 'warranty_12', name: '6 Months Extended Warranty', description: 'Extended hardware coverage', price: Math.round(price * 0.10) }];
     }, [isAdapter, isCable, isLaptop, isPhoneCategory, price]);
@@ -199,18 +226,32 @@ export default function ApplexCare({ product, currentPrice, selectedCarePlans, t
             case 'shipping':
                 return (
                     <div className="space-y-6">
-                        <h3 className="text-xl font-black text-gray-900 tracking-tight">Shipping Details</h3>
+                        <h3 className="text-xl font-black tracking-tight text-brand-navy">Shipping Details</h3>
                         <div className="grid gap-4">
-                            <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex justify-between items-center">
-                                <div><span className="text-[10px] uppercase font-black text-gray-400 tracking-widest">Inside Dhaka</span><p className="text-sm font-black">24–48 Hours</p></div>
-                                <span className="bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-widest">Fast</span>
+                            <div className="flex items-center justify-between rounded-2xl border border-brand-gray-border bg-brand-paper p-4">
+                                <div>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-brand-muted">
+                                        Inside Dhaka
+                                    </span>
+                                    <p className="text-sm font-black text-brand-navy">24–48 Hours</p>
+                                </div>
+                                <span className="rounded-lg bg-brand-navy px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white">
+                                    Fast
+                                </span>
                             </div>
-                            <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex justify-between items-center">
-                                <div><span className="text-[10px] uppercase font-black text-gray-400 tracking-widest">Outside Dhaka</span><p className="text-sm font-black">3–5 Business Days</p></div>
-                                <span className="bg-gray-200 text-gray-600 text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-widest">Standard</span>
+                            <div className="flex items-center justify-between rounded-2xl border border-brand-gray-border bg-brand-paper p-4">
+                                <div>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-brand-muted">
+                                        Outside Dhaka
+                                    </span>
+                                    <p className="text-sm font-black text-brand-navy">3–5 Business Days</p>
+                                </div>
+                                <span className="rounded-lg bg-brand-gray-border px-3 py-1 text-[10px] font-black uppercase tracking-widest text-brand-navy">
+                                    Standard
+                                </span>
                             </div>
                         </div>
-                        <p className="text-[10px] font-black text-gray-400 text-center uppercase tracking-widest leading-relaxed">
+                        <p className="text-center text-[10px] font-black uppercase leading-relaxed tracking-widest text-brand-muted">
                             * Delivery charges vary based on location and parcel weight. Standard rates apply.
                         </p>
                     </div>
@@ -226,61 +267,78 @@ export default function ApplexCare({ product, currentPrice, selectedCarePlans, t
             {/* Quick Actions */}
             <div className="grid grid-cols-1 gap-2">
                 {[
-                    { id: 'shipping', icon: FiTruck, title: 'Shipping', sub: '0-3 Day Fast Delivery' },
-                    { id: 'emi', icon: FiCreditCard, title: 'EMI Plans', sub: 'All Banks & Calculations' }
+                    { id: 'shipping', icon: Truck, title: 'Shipping', sub: '0-3 Day Fast Delivery' },
+                    { id: 'emi', icon: CreditCard, title: 'EMI Plans', sub: 'All Banks & Calculations' }
                 ].map((item) => (
-                    <button key={item.id} onClick={() => setActiveDrawer(item.id)} className="w-full flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:border-blue-200 hover:shadow-md transition-all group text-left">
-                        <div className="bg-gray-50 p-2.5 rounded-lg group-hover:bg-blue-600 transition-colors">
-                            <item.icon className="text-gray-400 w-4 h-4 group-hover:text-white transition-colors" />
+                    <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setActiveDrawer(item.id)}
+                        className="group flex w-full items-center gap-3 rounded-xl border border-brand-gray-border bg-white p-3 text-left shadow-sm transition-all hover:border-brand-navy/40 hover:shadow-md"
+                    >
+                        <div className="rounded-lg bg-brand-paper p-2.5 transition-colors group-hover:bg-brand-navy">
+                            <item.icon className="h-4 w-4 text-brand-navy transition-colors group-hover:text-white" strokeWidth={2} />
                         </div>
                         <div>
-                            <h4 className="font-black text-[11px] text-gray-900 uppercase tracking-widest leading-none mb-0.5">{item.title}</h4>
-                            <p className="text-[10px] font-bold text-gray-400">{item.sub}</p>
+                            <h4 className="mb-0.5 text-[11px] font-black uppercase leading-none tracking-widest text-brand-navy">
+                                {item.title}
+                            </h4>
+                            <p className="text-[10px] font-bold text-brand-muted">{item.sub}</p>
                         </div>
                     </button>
                 ))}
             </div>
 
-            {/* Care Section - Moved to bottom */}
-            <div className="bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-sm">
-                <div className="bg-black text-white h-[64px] px-3 py-0 flex items-center gap-2 overflow-hidden">
-                    <FiShield className="h-5 w-5 text-blue-500 shrink-0" />
-                    <div className="min-w-0 flex-1 h-full overflow-hidden rounded-sm bg-black flex items-center">
-                        <img
-                            src={APPLEX_CARE_PLUS_ONE_YEAR_IMG}
-                            alt="Applex Care+"
-                            className="h-full w-auto max-w-full object-contain object-left"
-                        />
+            {SHOW_CARE_PLAN_CARDS ? (
+                <div className="overflow-hidden rounded-2xl border-2 border-brand-gray-border bg-white shadow-sm">
+                    <div className="flex h-[64px] items-center gap-2 overflow-hidden bg-brand-navy px-3 py-0">
+                        <Shield className="h-5 w-5 shrink-0 text-brand-yellow" strokeWidth={2} />
+                        <div className="flex h-full min-w-0 flex-1 items-center overflow-hidden rounded-sm bg-brand-navy">
+                            <img
+                                src={CARE_PLUS_ONE_YEAR_IMG}
+                                alt="Care+"
+                                className="h-full w-auto max-w-full object-contain object-left"
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-2 p-3">
+                        {carePlansToShow.map((plan) => {
+                            const isSelected = selectedCarePlans.some((p) => p.id === plan.id);
+                            return (
+                                <label
+                                    key={plan.id}
+                                    className={`group flex cursor-pointer items-start gap-3 rounded-xl border-2 p-3 transition-all duration-300 ${
+                                        isSelected
+                                            ? "border-brand-navy bg-brand-paper"
+                                            : "border-brand-gray-border/60 bg-brand-paper/40 hover:border-brand-gray-border"
+                                    }`}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={isSelected}
+                                        onChange={() => toggleCarePlan(plan)}
+                                        className="mt-1 h-4 w-4 shrink-0 rounded-md border-2 border-brand-gray-border accent-brand-navy"
+                                    />
+                                    <div className="min-w-0 flex-1">
+                                        <div className="mb-0.5 flex items-baseline justify-between gap-2">
+                                            <h4 className="text-[12px] font-black text-brand-navy">{plan.name}</h4>
+                                            <span className="text-[12px] font-black text-brand-navy">
+                                                {plan.price === 0 ? "FREE" : `৳ ${plan.price.toLocaleString()}`}
+                                            </span>
+                                        </div>
+                                        <p className="text-[10px] font-bold leading-tight text-brand-muted">{plan.description}</p>
+                                    </div>
+                                </label>
+                            );
+                        })}
                     </div>
                 </div>
-                <div className="p-3 space-y-2">
-                    {carePlansToShow.map((plan) => {
-                        const isSelected = selectedCarePlans.some(p => p.id === plan.id);
-                        return (
-                            <label key={plan.id} className={`cursor-pointer group flex items-start gap-3 p-3 rounded-xl border-2 transition-all duration-300 ${isSelected ? "border-blue-600 bg-blue-50/50" : "border-gray-50 bg-gray-50/30 hover:border-gray-200"}`}>
-                                <input
-                                    type="checkbox"
-                                    checked={isSelected}
-                                    onChange={() => toggleCarePlan(plan)}
-                                    className="mt-1 w-4 h-4 shrink-0 border-2 rounded-md border-gray-300 accent-blue-600"
-                                />
-                                <div className="min-w-0 flex-1">
-                                    <div className="flex justify-between items-baseline gap-2 mb-0.5">
-                                        <h4 className={`font-black text-[12px] ${isSelected ? "text-blue-600" : "text-gray-900"}`}>{plan.name}</h4>
-                                        <span className="font-black text-[12px]">{plan.price === 0 ? "FREE" : `৳ ${plan.price.toLocaleString()}`}</span>
-                                    </div>
-                                    <p className="text-[10px] font-bold text-gray-400 leading-tight">{plan.description}</p>
-                                </div>
-                            </label>
-                        );
-                    })}
-                </div>
-            </div>
+            ) : null}
 
             {/* Drawer Overlay — matches original ProductExtras Premium Overlay */}
             {activeDrawer && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-md animate-in fade-in duration-300" onClick={closeDrawer} />
+                    <div className="absolute inset-0 animate-in fade-in bg-brand-navy/50 backdrop-blur-sm duration-300" onClick={closeDrawer} />
                     <div className={`
                         relative bg-white shadow-[0_32px_128px_-12px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col 
                         transition-all duration-500 animate-in zoom-in-95 slide-in-from-bottom-5
@@ -290,8 +348,12 @@ export default function ApplexCare({ product, currentPrice, selectedCarePlans, t
                         }
                     `}>
                         <div className="absolute top-6 right-6 z-20">
-                            <button onClick={closeDrawer} className="p-3 bg-gray-100 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-2xl transition-all active:scale-95">
-                                <FiX className="h-6 w-6" />
+                            <button
+                                type="button"
+                                onClick={closeDrawer}
+                                className="rounded-2xl bg-brand-paper p-3 text-brand-muted transition-all hover:bg-red-50 hover:text-red-500 active:scale-95"
+                            >
+                                <X className="h-6 w-6" strokeWidth={2} />
                             </button>
                         </div>
                         <div className="overflow-y-auto flex-1 p-8 md:p-12">

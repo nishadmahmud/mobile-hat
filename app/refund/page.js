@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export const metadata = {
-    title: 'Refund Policy | Applex',
+    title: 'Refund Policy | Mobile Hat',
     description: 'Our refund and return policy. Learn about our hassle-free return process.',
 };
 

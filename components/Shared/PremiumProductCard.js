@@ -42,7 +42,7 @@ export default function PremiumProductCard({
         if (typeof window === "undefined" || !product?.id) return;
         try {
             sessionStorage.setItem(
-                `applex_pdp_seed_${product.id}`,
+                `mobile_hat_pdp_seed_${product.id}`,
                 JSON.stringify({
                     id: product.id,
                     name: product.name,

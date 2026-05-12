@@ -1,8 +1,8 @@
-import Link from "next/link";
+import SitePageShell, { LegalPageHero } from "../../components/Layout/SitePageShell";
 
 export const metadata = {
-    title: "Privacy Policy | Applex",
-    description: "Applex privacy policy — how we collect, use, and protect your personal information.",
+    title: "Privacy Policy | Mobile Hat",
+    description: "Mobile Hat privacy policy — how we collect, use, and protect your personal information.",
 };
 
 const sections = [
@@ -58,7 +58,7 @@ const sections = [
         content: [
             "You have the right to access, update, or delete your personal information through your account settings.",
             "You may opt out of marketing communications at any time by unsubscribing from our emails.",
-            "You may request a copy of the data we hold about you by contacting us at support@applex.com.",
+            "You may request a copy of the data we hold about you by contacting us through the Contact page on this website.",
         ],
     },
     {
@@ -72,30 +72,38 @@ const sections = [
 
 export default function PrivacyPage() {
     return (
-        <div className="min-h-screen bg-gray-50 pb-20 md:pb-10">
-            <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-                <div className="max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 text-center">
-                    <span className="inline-block px-4 py-1.5 bg-brand-purple/20 text-brand-purple text-xs font-bold rounded-full mb-4 border border-brand-purple/20">LEGAL</span>
-                    <h1 className="text-3xl md:text-5xl font-extrabold mb-4">Privacy Policy</h1>
-                    <p className="text-gray-400 text-sm md:text-base">Last updated: February 2026</p>
-                </div>
-            </div>
-
-            <div className="max-w-4xl mx-auto px-4 md:px-8 -mt-6">
-                <div className="bg-white rounded-2xl shadow-lg p-6 md:p-10">
-                    <p className="text-sm text-gray-600 leading-relaxed mb-8">
-                        At Applex, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or make a purchase.
+        <SitePageShell
+            hero={
+                <LegalPageHero
+                    eyebrow={
+                        <span className="inline-block rounded-full border border-brand-gray-border bg-brand-paper px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-brand-navy">
+                            Legal
+                        </span>
+                    }
+                    title="Privacy Policy"
+                    subtitle="Last updated: February 2026"
+                />
+            }
+        >
+            <div className="mx-auto max-w-3xl">
+                <div className="rounded-2xl border border-brand-gray-border bg-white p-6 shadow-[0_12px_40px_rgba(30,45,74,0.06)] md:p-10">
+                    <p className="mb-8 text-sm leading-relaxed text-brand-muted">
+                        At Mobile Hat, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or make a purchase.
                     </p>
 
                     <div className="space-y-8">
                         {sections.map((section, i) => (
                             <div key={i}>
-                                <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-3">{section.title}</h2>
+                                <h2 className="mb-3 text-base font-black uppercase tracking-[0.06em] text-brand-navy md:text-lg">{section.title}</h2>
                                 <ul className="space-y-2">
                                     {section.content.map((item, j) => (
-                                        <li key={j} className="text-sm text-gray-600 leading-relaxed flex items-start gap-2">
-                                            <span className="text-brand-purple mt-1.5 flex-shrink-0">•</span>
-                                            <span dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-900">$1</strong>') }} />
+                                        <li key={j} className="flex items-start gap-2 text-sm leading-relaxed text-brand-muted">
+                                            <span className="mt-1.5 flex-shrink-0 font-black text-brand-navy">•</span>
+                                            <span
+                                                dangerouslySetInnerHTML={{
+                                                    __html: item.replace(/\*\*(.*?)\*\*/g, '<strong class="text-brand-navy">$1</strong>'),
+                                                }}
+                                            />
                                         </li>
                                     ))}
                                 </ul>
@@ -103,14 +111,17 @@ export default function PrivacyPage() {
                         ))}
                     </div>
 
-                    <div className="mt-10 p-5 bg-gray-50 rounded-xl border border-gray-100">
-                        <p className="text-sm text-gray-600">
+                    <div className="mt-10 rounded-xl border border-brand-gray-border bg-brand-paper/80 p-5">
+                        <p className="text-sm text-brand-muted">
                             If you have any questions about this Privacy Policy, please contact us through our Contact Us page or call{" "}
-                            <a href="tel:01980803060" className="text-brand-purple font-semibold hover:underline">01980-803060</a>.
+                            <a href="tel:01980803060" className="font-semibold text-brand-navy underline-offset-2 hover:underline">
+                                01980-803060
+                            </a>
+                            .
                         </p>
                     </div>
                 </div>
             </div>
-        </div>
+        </SitePageShell>
     );
 }

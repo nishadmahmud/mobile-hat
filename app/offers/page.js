@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { FiClock, FiTag, FiChevronRight, FiShoppingBag } from 'react-icons/fi';
-import { getCampaigns } from '../../lib/api';
-import ProductCard from '../../components/Shared/PremiumProductCard';
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Clock, Tag, ChevronRight } from "lucide-react";
+import { getCampaigns } from "../../lib/api";
+import ProductCard from "../../components/Shared/PremiumProductCard";
 
 export default function OffersPage() {
     const [campaigns, setCampaigns] = useState([]);
@@ -15,7 +15,6 @@ export default function OffersPage() {
         async function fetchOffers() {
             try {
                 const res = await getCampaigns();
-                // Based on provided structure: res.success, res.campaigns.data
                 if (res?.success && res.campaigns?.data) {
                     setCampaigns(res.campaigns.data);
                 } else if (res?.data) {
@@ -32,37 +31,37 @@ export default function OffersPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="flex min-h-screen items-center justify-center bg-brand-paper">
+                <div
+                    className="h-12 w-12 animate-spin rounded-full border-4 border-brand-navy/15 border-t-brand-navy"
+                    role="status"
+                    aria-label="Loading"
+                />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-20">
-            {/* Header / Hero - Minimalist Slim Banner */}
-            <div className="bg-[#111827] py-4 md:py-6 relative overflow-hidden border-b border-gray-800">
-                <div className="absolute top-0 right-0 w-1/4 h-full bg-blue-600/10 blur-[80px] -rotate-12 translate-x-1/2"></div>
-                <div className="max-w-7xl mx-auto px-6 relative z-10 flex items-center justify-between">
-                    <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
-                        <h1 className="text-xl md:text-3xl font-black text-white tracking-tight">
-                            Special <span className="text-blue-500">Campaigns</span>
+        <div className="min-h-screen bg-brand-paper pb-20">
+            <div className="relative overflow-hidden border-b border-brand-navy-deep bg-brand-navy py-5 md:py-7">
+                <div className="pointer-events-none absolute right-0 top-0 h-full w-1/3 translate-x-1/4 bg-brand-yellow/10 blur-[80px]" aria-hidden />
+                <div className="relative z-10 mx-auto flex max-w-[1550px] items-center justify-between px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-6">
+                        <h1 className="text-xl font-black tracking-tight text-white md:text-3xl">
+                            Special <span className="text-brand-yellow-bright">Campaigns</span>
                         </h1>
-                        <span className="hidden md:block w-px h-6 bg-gray-800"></span>
-                        <p className="text-gray-400 text-xs md:text-sm font-medium">
-                            Exclusive deals and grand opening celebrations.
-                        </p>
+                        <span className="hidden h-6 w-px bg-white/15 md:block" aria-hidden />
+                        <p className="text-xs font-medium text-white/70 md:text-sm">Exclusive deals and grand opening celebrations.</p>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 mt-6 md:mt-10 space-y-12">
+            <div className="mx-auto mt-6 max-w-[1550px] space-y-12 px-4 sm:px-6 md:mt-10 lg:px-8">
                 {campaigns.length > 0 ? (
                     campaigns.map((campaign) => (
                         <div key={campaign.id} className="space-y-8">
-                            {/* Campaign Banner Card */}
-                            <div className="relative rounded-[2rem] overflow-hidden shadow-2xl shadow-blue-900/10 border border-white">
-                                <div className="aspect-[21/9] md:aspect-[25/7] relative">
+                            <div className="relative overflow-hidden rounded-[2rem] border border-brand-gray-border shadow-[0_24px_60px_rgba(30,45,74,0.12)]">
+                                <div className="relative aspect-[21/9] md:aspect-[25/7]">
                                     <Image
                                         src={campaign.bg_image || "/no-image.svg"}
                                         alt={campaign.name}
@@ -70,26 +69,30 @@ export default function OffersPage() {
                                         className="object-cover"
                                         unoptimized
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex items-center">
-                                        <div className="p-8 md:p-16 max-w-2xl">
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <span className="px-3 py-1 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">Active Campaign</span>
+                                    <div className="absolute inset-0 flex items-center bg-gradient-to-r from-black/80 via-black/45 to-transparent">
+                                        <div className="max-w-2xl p-8 md:p-16">
+                                            <div className="mb-4 flex flex-wrap items-center gap-2">
+                                                <span className="rounded-full bg-brand-navy px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white shadow-lg">
+                                                    Active campaign
+                                                </span>
                                                 {campaign.end_at && (
-                                                    <span className="flex items-center gap-1.5 text-white/90 text-xs font-bold bg-black/30 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 uppercase tracking-wider">
-                                                        <FiClock className="w-3.5 h-3.5" /> Ends: {new Date(campaign.end_at).toLocaleDateString()}
+                                                    <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-black/35 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white/90 backdrop-blur-md">
+                                                        <Clock className="size-3.5 shrink-0" strokeWidth={2} />
+                                                        Ends: {new Date(campaign.end_at).toLocaleDateString()}
                                                     </span>
                                                 )}
                                             </div>
-                                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">{campaign.name}</h2>
-                                            <p className="text-gray-200 text-sm md:text-lg mb-8 leading-relaxed line-clamp-3 font-medium">
+                                            <h2 className="mb-4 text-3xl font-black leading-tight text-white md:text-5xl">{campaign.name}</h2>
+                                            <p className="mb-8 line-clamp-3 text-sm font-medium leading-relaxed text-white/85 md:text-lg">
                                                 {campaign.description}
                                             </p>
                                             {campaign.button_text && (
                                                 <Link
                                                     href={campaign.link || "#"}
-                                                    className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 font-black rounded-2xl hover:bg-blue-50 transition-all shadow-xl shadow-black/20 group"
+                                                    className="group inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-4 font-black text-brand-navy shadow-xl shadow-black/25 transition-colors hover:bg-brand-paper"
                                                 >
-                                                    {campaign.button_text} <FiChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                                    {campaign.button_text}{" "}
+                                                    <ChevronRight className="size-5 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
                                                 </Link>
                                             )}
                                         </div>
@@ -97,16 +100,18 @@ export default function OffersPage() {
                                 </div>
                             </div>
 
-                            {/* Campaign Products Grid */}
                             <div className="space-y-6">
                                 <div className="flex items-center justify-between px-2">
-                                    <h3 className="text-xl md:text-2xl font-black text-gray-900 flex items-center gap-3">
-                                        <FiTag className="text-blue-600" /> Featured Products
+                                    <h3 className="flex items-center gap-3 text-xl font-black text-brand-navy md:text-2xl">
+                                        <Tag className="size-6 shrink-0 text-brand-yellow-bright md:size-7" strokeWidth={2} />
+                                        Featured products
                                     </h3>
-                                    <span className="text-gray-500 text-sm font-bold uppercase tracking-wider">{campaign.products?.length || 0} Deals</span>
+                                    <span className="text-xs font-black uppercase tracking-widest text-brand-muted">
+                                        {campaign.products?.length || 0} deals
+                                    </span>
                                 </div>
 
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5">
                                     {campaign.products?.map((product) => (
                                         <ProductCard key={product.id} product={product} />
                                     ))}
@@ -115,19 +120,19 @@ export default function OffersPage() {
                         </div>
                     ))
                 ) : (
-                    <div className="text-center py-24 bg-white rounded-[3rem] border border-dashed border-gray-200">
-                        <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <FiTag size={40} className="text-gray-300" />
+                    <div className="rounded-[2rem] border border-dashed border-brand-gray-border bg-white py-24 text-center shadow-sm">
+                        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-brand-gray-border bg-brand-paper">
+                            <Tag className="size-10 text-brand-muted/50" strokeWidth={1.5} />
                         </div>
-                        <h3 className="text-2xl font-black text-gray-900">No active campaigns right now</h3>
-                        <p className="text-gray-500 mt-3 font-medium max-w-md mx-auto">
+                        <h3 className="text-2xl font-black text-brand-navy">No active campaigns right now</h3>
+                        <p className="mx-auto mt-3 max-w-md font-medium text-brand-muted">
                             Check back soon for exciting new offers, grand opening celebrations, and exclusive deals!
                         </p>
                         <Link
                             href="/"
-                            className="mt-8 inline-block px-8 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
+                            className="mt-8 inline-block rounded-2xl bg-brand-navy px-8 py-3 font-black uppercase tracking-widest text-white shadow-lg shadow-brand-navy/25 transition-colors hover:bg-brand-navy-deep"
                         >
-                            Back to Home
+                            Back to home
                         </Link>
                     </div>
                 )}

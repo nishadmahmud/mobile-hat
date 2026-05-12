@@ -19,8 +19,8 @@ export function AuthProvider({ children }) {
     // Load user from localStorage on mount
     useEffect(() => {
         try {
-            const storedToken = localStorage.getItem("applex_token");
-            const storedUser = localStorage.getItem("applex_user");
+            const storedToken = localStorage.getItem("mobile_hat_token");
+            const storedUser = localStorage.getItem("mobile_hat_user");
 
             if (storedToken && storedUser) {
                 setToken(storedToken);
@@ -28,8 +28,8 @@ export function AuthProvider({ children }) {
             }
         } catch (error) {
             console.error("Failed to load auth state from localStorage", error);
-            localStorage.removeItem("applex_token");
-            localStorage.removeItem("applex_user");
+            localStorage.removeItem("mobile_hat_token");
+            localStorage.removeItem("mobile_hat_user");
         } finally {
             setLoading(false);
         }
@@ -38,8 +38,8 @@ export function AuthProvider({ children }) {
     // Persist auth state
     const persistAuth = useCallback((newToken, newUser) => {
         try {
-            localStorage.setItem("applex_token", newToken);
-            localStorage.setItem("applex_user", JSON.stringify(newUser));
+            localStorage.setItem("mobile_hat_token", newToken);
+            localStorage.setItem("mobile_hat_user", JSON.stringify(newUser));
         } catch (error) {
             console.error("Failed to persist auth state", error);
         }
@@ -106,8 +106,8 @@ export function AuthProvider({ children }) {
 
     // Logout
     const logout = useCallback(() => {
-        localStorage.removeItem("applex_token");
-        localStorage.removeItem("applex_user");
+        localStorage.removeItem("mobile_hat_token");
+        localStorage.removeItem("mobile_hat_user");
         setUser(null);
         setToken(null);
     }, []);
@@ -123,7 +123,7 @@ export function AuthProvider({ children }) {
                 const updatedUser = { ...user, ...profileData };
                 setUser(updatedUser);
                 try {
-                    localStorage.setItem("applex_user", JSON.stringify(updatedUser));
+                    localStorage.setItem("mobile_hat_user", JSON.stringify(updatedUser));
                 } catch (e) {
                     console.error("Failed to persist updated user", e);
                 }

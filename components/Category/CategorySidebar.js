@@ -37,13 +37,13 @@ function FilterSection({
     if (!Array.isArray(options) || options.length === 0) return null;
 
     return (
-        <div className="border-b border-gray-200 pb-5">
+        <div className="border-b border-brand-gray-border/80 pb-5 last:border-b-0 last:pb-0">
             <button
                 onClick={onToggleExpand}
-                className="w-full flex items-center justify-between mb-3 text-left"
+                className="mb-3 flex w-full items-center justify-between text-left"
             >
-                <span className="text-[13px] font-bold text-gray-900">{title}</span>
-                {isExpanded ? <FiChevronUp className="text-gray-600" /> : <FiChevronDown className="text-gray-600" />}
+                <span className="text-[11px] font-black uppercase tracking-[0.14em] text-brand-navy">{title}</span>
+                {isExpanded ? <FiChevronUp className="text-brand-muted" size={18} /> : <FiChevronDown className="text-brand-muted" size={18} />}
             </button>
 
             {isExpanded && (
@@ -54,20 +54,20 @@ function FilterSection({
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder={`Search ${title}`}
-                            className="w-full h-9 rounded-full border border-gray-200 bg-gray-50 px-4 text-sm outline-none focus:border-brand-navy"
+                            className="h-9 w-full rounded-full border border-brand-gray-border bg-brand-paper px-4 text-sm text-brand-navy outline-none transition-shadow focus:border-brand-navy focus:ring-2 focus:ring-brand-navy/10"
                         />
                     )}
 
                     <div className="space-y-2">
                         {visible.map((opt) => (
-                            <label key={`${sectionKey}-${opt}`} className="flex items-center gap-2 cursor-pointer">
+                            <label key={`${sectionKey}-${opt}`} className="flex cursor-pointer items-center gap-2">
                                 <input
                                     type="checkbox"
                                     checked={selectedValues.includes(opt)}
                                     onChange={() => onToggleValue(opt)}
-                                    className="h-4 w-4 rounded border-gray-300 text-brand-navy focus:ring-brand-navy"
+                                    className="h-4 w-4 rounded border-brand-gray-border text-brand-navy focus:ring-brand-navy"
                                 />
-                                <span className="text-sm font-medium text-gray-800">{opt}</span>
+                                <span className="text-sm font-medium text-brand-navy/90">{opt}</span>
                             </label>
                         ))}
                     </div>
@@ -76,7 +76,7 @@ function FilterSection({
                         <button
                             type="button"
                             onClick={() => setShowAll((prev) => !prev)}
-                            className="inline-flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-brand-navy"
+                            className="inline-flex items-center gap-1 text-sm font-bold text-brand-navy hover:text-brand-yellow-bright"
                         >
                             <FiPlus />
                             {showAll ? 'Less' : 'More'}
@@ -180,35 +180,51 @@ export default function CategorySidebar({
     return (
         <>
             <div
-                className={`fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                className={`fixed inset-0 z-40 bg-black/45 backdrop-blur-[2px] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
                 onClick={onClose}
+                aria-hidden={!isOpen}
             />
 
-            <aside className={`
-                fixed inset-y-0 left-0 z-50 w-[320px] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out
-                lg:translate-x-0 lg:static lg:w-full lg:shadow-none lg:border lg:border-gray-200 lg:rounded-xl lg:bg-white
-                ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-            `}>
-                <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                    <span className="text-[18px] font-bold text-gray-900">Filters</span>
+            <aside
+                className={`
+                fixed inset-y-0 right-0 z-50 flex w-full max-w-[min(100vw,420px)] flex-col bg-white shadow-[-12px_0_40px_rgba(30,45,74,0.18)]
+                transition-transform duration-300 ease-out
+                ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+            `}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Filters"
+            >
+                <div className="flex shrink-0 items-center justify-between border-b border-brand-gray-border px-4 py-4 md:px-5">
+                    <span className="text-base font-black uppercase tracking-[0.12em] text-brand-navy">Refine</span>
                     <div className="flex items-center gap-2">
-                        <button onClick={handleReset} className="text-xs font-semibold bg-gray-100 px-3 py-1.5 rounded hover:bg-gray-200 text-gray-700">
+                        <button
+                            type="button"
+                            onClick={handleReset}
+                            className="rounded-full border border-brand-gray-border bg-brand-paper px-3 py-1.5 text-xs font-bold text-brand-navy transition-colors hover:border-brand-yellow"
+                        >
                             Reset
                         </button>
-                        <button onClick={onClose} className="lg:hidden p-2 hover:bg-gray-100 rounded-full">
-                            <FiX size={20} />
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="rounded-full p-2 text-brand-navy transition-colors hover:bg-brand-paper"
+                            aria-label="Close filters"
+                        >
+                            <FiX size={22} />
                         </button>
                     </div>
                 </div>
 
-                <div className="p-4 space-y-5 overflow-y-auto h-[calc(100%-72px)] lg:h-auto lg:max-h-[80vh]">
-                    <div className="border-b border-gray-200 pb-5">
+                <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain p-4 md:p-5">
+                    <div className="border-b border-brand-gray-border/80 pb-5">
                         <button
+                            type="button"
                             onClick={() => toggleSection('price_range')}
-                            className="w-full flex items-center justify-between mb-3 text-left"
+                            className="mb-3 flex w-full items-center justify-between text-left"
                         >
-                            <span className="text-[13px] font-bold text-gray-900">Price Range</span>
-                            {expandedSections.price_range ? <FiChevronUp className="text-gray-600" /> : <FiChevronDown className="text-gray-600" />}
+                            <span className="text-[11px] font-black uppercase tracking-[0.14em] text-brand-navy">Price range</span>
+                            {expandedSections.price_range ? <FiChevronUp className="text-brand-muted" size={18} /> : <FiChevronDown className="text-brand-muted" size={18} />}
                         </button>
 
                         {expandedSections.price_range && (
@@ -219,14 +235,14 @@ export default function CategorySidebar({
                                         value={selectedPrice.min}
                                         placeholder={String(globalMinPrice)}
                                         onChange={(e) => setSelectedPrice({ ...selectedPrice, min: e.target.value })}
-                                        className="w-full h-10 border border-gray-200 rounded-lg px-3 text-sm outline-none focus:border-brand-navy"
+                                        className="h-10 w-full rounded-xl border border-brand-gray-border bg-white px-3 text-sm text-brand-navy outline-none focus:border-brand-navy focus:ring-2 focus:ring-brand-navy/10"
                                     />
                                     <input
                                         type="number"
                                         value={selectedPrice.max}
                                         placeholder={String(globalMaxPrice)}
                                         onChange={(e) => setSelectedPrice({ ...selectedPrice, max: e.target.value })}
-                                        className="w-full h-10 border border-gray-200 rounded-lg px-3 text-sm outline-none focus:border-brand-navy"
+                                        className="h-10 w-full rounded-xl border border-brand-gray-border bg-white px-3 text-sm text-brand-navy outline-none focus:border-brand-navy focus:ring-2 focus:ring-brand-navy/10"
                                     />
                                 </div>
                             </div>
@@ -249,13 +265,14 @@ export default function CategorySidebar({
 
                     {/* Color with real swatches */}
                     {(derivedFilters.colorList || []).length > 0 && (
-                        <div className="border-b border-gray-200 pb-5">
+                        <div className="border-b border-brand-gray-border/80 pb-5">
                             <button
+                                type="button"
                                 onClick={() => toggleSection('color')}
-                                className="w-full flex items-center justify-between mb-3 text-left"
+                                className="mb-3 flex w-full items-center justify-between text-left"
                             >
-                                <span className="text-[13px] font-bold text-gray-900">Color</span>
-                                {isSectionExpanded('color') ? <FiChevronUp className="text-gray-600" /> : <FiChevronDown className="text-gray-600" />}
+                                <span className="text-[11px] font-black uppercase tracking-[0.14em] text-brand-navy">Color</span>
+                                {isSectionExpanded('color') ? <FiChevronUp className="text-brand-muted" size={18} /> : <FiChevronDown className="text-brand-muted" size={18} />}
                             </button>
                             {isSectionExpanded('color') && (
                                 <div className="flex flex-wrap gap-3">
@@ -264,16 +281,16 @@ export default function CategorySidebar({
                                             key={color.name}
                                             type="button"
                                             onClick={() => toggleListValue(color.name, selectedColor, setSelectedColor)}
-                                            className={`w-8 h-8 rounded-full border shadow-sm transition-transform hover:scale-110 relative ${
+                                            className={`relative h-8 w-8 rounded-full border-2 shadow-sm transition-transform hover:scale-110 ${
                                                 selectedColor.includes(color.name)
-                                                    ? 'ring-2 ring-brand-navy ring-offset-2 border-brand-navy'
-                                                    : 'border-gray-200'
+                                                    ? 'border-brand-navy ring-2 ring-brand-navy ring-offset-2'
+                                                    : 'border-brand-gray-border'
                                             }`}
                                             style={{ backgroundColor: color.hex }}
                                             title={color.name}
                                         >
                                             {(color.hex === '#ffffff' || color.hex?.toLowerCase() === '#fff') ? (
-                                                <span className="absolute inset-0 rounded-full border border-gray-200"></span>
+                                                <span className="absolute inset-0 rounded-full border border-brand-gray-border" />
                                             ) : null}
                                         </button>
                                     ))}
@@ -296,47 +313,48 @@ export default function CategorySidebar({
                         />
                     ))}
 
-                    <div className="border-b border-gray-200 pb-5">
+                    <div className="border-b border-brand-gray-border/80 pb-5 last:border-b-0">
                         <button
+                            type="button"
                             onClick={() => toggleSection('availability')}
-                            className="w-full flex items-center justify-between mb-3 text-left"
+                            className="mb-3 flex w-full items-center justify-between text-left"
                         >
-                            <span className="text-[13px] font-bold text-gray-900">Availability</span>
-                            {isSectionExpanded('availability') ? <FiChevronUp className="text-gray-600" /> : <FiChevronDown className="text-gray-600" />}
+                            <span className="text-[11px] font-black uppercase tracking-[0.14em] text-brand-navy">Availability</span>
+                            {isSectionExpanded('availability') ? <FiChevronUp className="text-brand-muted" size={18} /> : <FiChevronDown className="text-brand-muted" size={18} />}
                         </button>
                         {isSectionExpanded('availability') && (
                             <div className="space-y-2">
-                                <label className="flex items-center gap-2 cursor-pointer">
+                                <label className="flex cursor-pointer items-center gap-2">
                                     <input
                                         type="radio"
                                         name="availability"
                                         checked={selectedAvailability === 'All'}
                                         onChange={() => setSelectedAvailability('All')}
-                                        className="h-4 w-4 text-brand-navy border-gray-300"
+                                        className="h-4 w-4 border-brand-gray-border text-brand-navy focus:ring-brand-navy"
                                     />
-                                    <span className="text-sm font-medium text-gray-800">All</span>
+                                    <span className="text-sm font-medium text-brand-navy/90">All</span>
                                 </label>
-                                <label className="flex items-center gap-2 cursor-pointer">
+                                <label className="flex cursor-pointer items-center gap-2">
                                     <input
                                         type="radio"
                                         name="availability"
                                         checked={selectedAvailability === 'In Stock'}
                                         onChange={() => setSelectedAvailability('In Stock')}
-                                        className="h-4 w-4 text-brand-navy border-gray-300"
+                                        className="h-4 w-4 border-brand-gray-border text-brand-navy focus:ring-brand-navy"
                                     />
-                                    <span className="text-sm font-medium text-gray-800">In Stock</span>
+                                    <span className="text-sm font-medium text-brand-navy/90">In stock</span>
                                 </label>
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="lg:hidden p-4 border-t border-gray-100 bg-white flex gap-3 mt-auto">
-                    <button onClick={handleReset} className="flex-1 py-3 border border-gray-200 rounded-xl text-brand-navy font-bold text-sm">
+                <div className="flex shrink-0 gap-3 border-t border-brand-gray-border bg-brand-paper p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
+                    <button type="button" onClick={handleReset} className="flex-1 rounded-xl border border-brand-gray-border py-3 text-sm font-bold text-brand-navy transition-colors hover:border-brand-yellow">
                         Reset
                     </button>
-                    <button onClick={onClose} className="flex-1 py-3 bg-brand-navy text-white rounded-xl font-bold text-sm shadow-lg shadow-brand-navy/25">
-                        Apply Filters
+                    <button type="button" onClick={onClose} className="flex-1 rounded-xl bg-brand-navy py-3 text-sm font-bold text-white shadow-lg shadow-brand-navy/25 transition-colors hover:bg-brand-navy-deep">
+                        Done
                     </button>
                 </div>
             </aside>

@@ -1,184 +1,194 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { Store, Users, HeartHandshake, Sparkles } from 'lucide-react';
 
 export const metadata = {
-    title: 'About Us | Applex',
-    description: 'Learn about Applex — Bangladesh\'s premier destination for genuine tech gear, smart gadgets, and digital lifestyle accessories.',
+    title: 'About Us | Mobile Hat',
+    description:
+        "Learn about Mobile Hat — genuine tech, smart gadgets, and accessories for your digital lifestyle.",
 };
+
+function VisualPanel({ children, className = '' }) {
+    return (
+        <div
+            className={`relative overflow-hidden rounded-[2rem] border-4 border-white shadow-2xl ${className}`}
+        >
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-navy via-brand-navy-deep to-brand-navy" />
+            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_30%_20%,rgba(255,200,92,0.35),transparent_50%)]" />
+            <div className="relative flex min-h-[280px] items-center justify-center p-10 md:min-h-[320px]">
+                {children}
+            </div>
+        </div>
+    );
+}
 
 export default function AboutPage() {
     return (
-        <div className="bg-white min-h-screen">
-            {/* Hero Section */}
-            <div className="relative bg-gray-900 py-20 overflow-hidden">
-                <div className="absolute inset-0 opacity-20">
-                    <Image
-                        src="/store_img.jpg"
-                        alt="Background"
-                        fill
-                        className="object-cover blur-sm"
-                        priority
-                    />
-                </div>
-                <div className="max-w-[1550px] mx-auto px-4 md:px-8 relative z-10 text-center">
-                    <span className="inline-block px-4 py-1.5 bg-brand-purple/20 text-brand-purple text-xs font-bold rounded-full mb-4 border border-brand-purple/20">OUR STORY</span>
-                    <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6">About <span className="text-brand-purple">Applex</span></h1>
-                    <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                        Bangladesh's premier destination for genuine tech gear, smart gadgets, and digital lifestyle accessories.
+        <div className="min-h-screen bg-brand-paper">
+            <div className="relative overflow-hidden bg-brand-navy py-20 md:py-24">
+                <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_top_right,rgba(255,200,92,0.2),transparent_55%)]" aria-hidden />
+                <div className="absolute inset-0 bg-brand-navy/90" aria-hidden />
+                <div className="relative z-10 mx-auto max-w-[1550px] px-4 text-center md:px-8">
+                    <span className="mb-4 inline-block rounded-full border border-brand-yellow/40 bg-brand-yellow/15 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-brand-yellow-bright">
+                        Our story
+                    </span>
+                    <h1 className="mb-6 text-4xl font-black uppercase tracking-[0.06em] text-white md:text-6xl md:tracking-[0.08em]">
+                        About <span className="text-brand-yellow-bright">Mobile Hat</span>
+                    </h1>
+                    <p className="mx-auto max-w-3xl text-lg leading-relaxed text-white/85 md:text-xl">
+                        Your destination for genuine tech gear, smart gadgets, and digital lifestyle accessories.
                     </p>
                 </div>
             </div>
 
-            <div className="max-w-[1550px] mx-auto px-4 md:px-8 py-16 md:py-24 space-y-24 md:space-y-32">
-
-                {/* Who We Are Section */}
-                <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="mx-auto max-w-[1550px] space-y-20 px-4 py-16 md:space-y-28 md:px-8 md:py-24">
+                <section className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                     <div className="space-y-6">
-                        <div className="inline-block p-3 bg-blue-50 rounded-2xl text-blue-600 mb-2">
-                            <span className="text-sm font-bold tracking-wider uppercase">Authenticity First</span>
+                        <div className="mb-2 inline-block rounded-2xl border border-brand-gray-border bg-brand-paper px-3 py-2">
+                            <span className="text-xs font-black uppercase tracking-widest text-brand-navy">Authenticity first</span>
                         </div>
-                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">Who We Are</h2>
-                        <p className="text-gray-600 text-lg leading-relaxed">
-                            Applex is a leading electronics and gadget retailer in Bangladesh. We are passionate about bringing the latest technology to your doorstep at the most competitive prices. From smartphones and laptops to accessories and smart home devices, we curate only the best products from top global brands.
+                        <h2 className="text-3xl font-black leading-tight text-brand-navy md:text-4xl">Who we are</h2>
+                        <p className="text-lg leading-relaxed text-brand-muted">
+                            We are an electronics and gadget retailer focused on bringing reliable technology to you at fair prices. From smartphones and laptops to accessories and smart home devices, we curate products from trusted global brands.
                         </p>
                         <div className="flex flex-wrap gap-4 pt-4">
-                            <div className="bg-gray-50 px-6 py-4 rounded-2xl border border-gray-100 flex-1 min-w-[160px]">
-                                <span className="block text-2xl font-black text-brand-purple">100%</span>
-                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Genuine Gear</span>
+                            <div className="min-w-[160px] flex-1 rounded-2xl border border-brand-gray-border bg-white px-6 py-4 shadow-sm">
+                                <span className="block text-2xl font-black text-brand-navy">100%</span>
+                                <span className="text-xs font-black uppercase tracking-widest text-brand-muted">Genuine gear</span>
                             </div>
-                            <div className="bg-gray-50 px-6 py-4 rounded-2xl border border-gray-100 flex-1 min-w-[160px]">
-                                <span className="block text-2xl font-black text-brand-purple">Best</span>
-                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Market Prices</span>
+                            <div className="min-w-[160px] flex-1 rounded-2xl border border-brand-gray-border bg-white px-6 py-4 shadow-sm">
+                                <span className="block text-2xl font-black text-brand-navy">Best</span>
+                                <span className="text-xs font-black uppercase tracking-widest text-brand-muted">Market prices</span>
                             </div>
                         </div>
                     </div>
-                    <div className="relative group">
-                        <div className="absolute -inset-4 bg-gradient-to-tr from-brand-purple/20 to-blue-600/20 rounded-[2.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-700"></div>
-                        <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white aspect-[4/3]">
-                            <Image
-                                src="/store_img.jpg"
-                                alt="Applex Store Location"
-                                fill
-                                className="object-cover transform group-hover:scale-105 transition duration-700"
-                            />
-                        </div>
+                    <div className="group relative">
+                        <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-tr from-brand-navy/15 to-brand-yellow/15 opacity-70 blur-2xl transition duration-700 group-hover:opacity-100" />
+                        <VisualPanel>
+                            <Store className="h-28 w-28 text-brand-yellow-bright/90 md:h-32 md:w-32" strokeWidth={1.25} aria-hidden />
+                        </VisualPanel>
                     </div>
                 </section>
 
-                {/* Customer Happiness Section */}
-                <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <div className="relative order-2 lg:order-1 group">
-                        <div className="absolute -inset-4 bg-gradient-to-bl from-yellow-400/20 to-brand-purple/20 rounded-[2.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-700"></div>
-                        <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white aspect-[3/4] max-h-[600px] lg:max-h-none">
-                            <Image
-                                src="/happy customer.jpg"
-                                alt="Happy Applex Customer"
-                                fill
-                                className="object-cover transform group-hover:scale-105 transition duration-700"
-                            />
-                        </div>
+                <section className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+                    <div className="relative order-2 group lg:order-1">
+                        <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-bl from-brand-yellow/20 to-brand-navy/15 opacity-60 blur-2xl transition duration-700 group-hover:opacity-100" />
+                        <VisualPanel>
+                            <HeartHandshake className="h-28 w-28 text-brand-yellow-bright/90 md:h-32 md:w-32" strokeWidth={1.25} aria-hidden />
+                        </VisualPanel>
                     </div>
-                    <div className="space-y-6 order-1 lg:order-2">
-                        <div className="inline-block p-3 bg-purple-50 rounded-2xl text-brand-purple mb-2">
-                            <span className="text-sm font-bold tracking-wider uppercase">Customer Experience</span>
+                    <div className="order-1 space-y-6 lg:order-2">
+                        <div className="mb-2 inline-block rounded-2xl border border-brand-gray-border bg-brand-paper px-3 py-2">
+                            <span className="text-xs font-black uppercase tracking-widest text-brand-navy">Customer experience</span>
                         </div>
-                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">Your Smile, Our Success</h2>
-                        <p className="text-gray-600 text-lg leading-relaxed">
-                            Our mission is to make premium technology accessible to everyone in Bangladesh. We believe that everyone deserves access to genuine, high-quality tech products with reliable after-sales support and warranty coverage.
+                        <h2 className="text-3xl font-black leading-tight text-brand-navy md:text-4xl">Your satisfaction, our priority</h2>
+                        <p className="text-lg leading-relaxed text-brand-muted">
+                            Our mission is to make quality technology accessible. We believe everyone deserves genuine products with dependable after-sales support and warranty coverage.
                         </p>
-                        <p className="text-gray-600 text-lg leading-relaxed">
-                            We don't just sell gadgets; we build relationships. Every customer walk-in is a chance for us to show why Applex is the most trusted name in the industry.
+                        <p className="text-lg leading-relaxed text-brand-muted">
+                            We don&apos;t just sell gadgets; we build relationships. Every interaction is a chance to earn your trust with honest advice and dependable service.
                         </p>
                     </div>
                 </section>
 
-                {/* Built with Love Section */}
-                <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <section className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                     <div className="space-y-6">
-                        <div className="inline-block p-3 bg-red-50 rounded-2xl text-red-500 mb-2">
-                            <span className="text-sm font-bold tracking-wider uppercase">Built with heart</span>
+                        <div className="mb-2 inline-block rounded-2xl border border-brand-gray-border bg-brand-paper px-3 py-2">
+                            <span className="text-xs font-black uppercase tracking-widest text-brand-navy">Built with care</span>
                         </div>
-                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">A Community We Cherish</h2>
-                        <p className="text-gray-600 text-lg leading-relaxed">
-                            From the youngest tech enthusiasts to experienced professionals, we cater to every generation. Our interactions go beyond transactions—we love hearing your stories and helping you find the perfect companion for your digital lifestyle.
+                        <h2 className="text-3xl font-black leading-tight text-brand-navy md:text-4xl">A community we value</h2>
+                        <p className="text-lg leading-relaxed text-brand-muted">
+                            From first-time buyers to power users, we aim to serve every customer with respect. We enjoy helping you find the right device for work, study, and everyday life.
                         </p>
                         <div className="pt-4">
-                            <blockquote className="border-l-4 border-brand-purple pl-6 py-2 italic text-gray-500 text-lg">
-                                "Technology is most powerful when it empowers everyone, regardless of age."
+                            <blockquote className="border-l-4 border-brand-navy py-2 pl-6 text-lg italic text-brand-muted">
+                                &quot;Technology is most powerful when it empowers everyone, regardless of experience.&quot;
                             </blockquote>
                         </div>
                     </div>
-                    <div className="relative group">
-                        <div className="absolute -inset-4 bg-gradient-to-br from-red-400/20 to-brand-purple/20 rounded-[2.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-700"></div>
-                        <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white aspect-[3/4] max-h-[600px] lg:max-h-none">
-                            <Image
-                                src="/cute_intaraction.jpg"
-                                alt="Technology for everyone"
-                                fill
-                                className="object-cover transform group-hover:scale-105 transition duration-700"
-                            />
-                        </div>
+                    <div className="group relative">
+                        <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br from-brand-navy/15 to-brand-yellow/15 opacity-60 blur-2xl transition duration-700 group-hover:opacity-100" />
+                        <VisualPanel>
+                            <Sparkles className="h-28 w-28 text-brand-yellow-bright/90 md:h-32 md:w-32" strokeWidth={1.25} aria-hidden />
+                        </VisualPanel>
                     </div>
                 </section>
 
-                {/* Dedicated Team Section */}
-                <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <div className="relative order-2 lg:order-1 group">
-                        <div className="absolute -inset-4 bg-gradient-to-tr from-brand-purple/20 to-blue-600/20 rounded-[2.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-700"></div>
-                        <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white aspect-[3/4] max-h-[600px] lg:max-h-none">
-                            <Image
-                                src="/employe.jpeg"
-                                alt="Applex Team Expert"
-                                fill
-                                className="object-cover transform group-hover:scale-105 transition duration-700"
-                            />
-                        </div>
+                <section className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+                    <div className="relative order-2 group lg:order-1">
+                        <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-tr from-brand-navy/15 to-brand-yellow/15 opacity-60 blur-2xl transition duration-700 group-hover:opacity-100" />
+                        <VisualPanel>
+                            <Users className="h-28 w-28 text-brand-yellow-bright/90 md:h-32 md:w-32" strokeWidth={1.25} aria-hidden />
+                        </VisualPanel>
                     </div>
-                    <div className="space-y-6 order-1 lg:order-2">
-                        <div className="inline-block p-3 bg-blue-50 rounded-2xl text-blue-600 mb-2">
-                            <span className="text-sm font-bold tracking-wider uppercase">EXPERT SUPPORT</span>
+                    <div className="order-1 space-y-6 lg:order-2">
+                        <div className="mb-2 inline-block rounded-2xl border border-brand-gray-border bg-brand-paper px-3 py-2">
+                            <span className="text-xs font-black uppercase tracking-widest text-brand-navy">Expert support</span>
                         </div>
-                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">Expert Support, Genuine Care</h2>
-                        <p className="text-gray-600 text-lg leading-relaxed">
-                            Our team is the heart of Applex. We don't just know gadgets; we understand how they fit into your life. Every member of our staff is trained to provide expert advice, ensuring you make the best choice for your needs.
+                        <h2 className="text-3xl font-black leading-tight text-brand-navy md:text-4xl">Expert support, genuine care</h2>
+                        <p className="text-lg leading-relaxed text-brand-muted">
+                            Our team is here to help you choose with confidence. We focus on clear guidance so you get the right product for your budget and needs.
                         </p>
-                        <p className="text-gray-600 text-lg leading-relaxed">
-                            Whether it's choosing your first smartwatch or setting up a professional workstation, we're here to guide you with technical expertise and a friendly smile.
+                        <p className="text-lg leading-relaxed text-brand-muted">
+                            Whether it&apos;s your first smartwatch or a full workstation setup, we&apos;re ready to help with practical advice and a friendly experience.
                         </p>
                     </div>
                 </section>
 
-                {/* Core Values / Features Grid */}
                 <section className="py-12">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">Why Choose Applex?</h2>
-                        <div className="w-24 h-2 bg-brand-purple mx-auto rounded-full"></div>
+                    <div className="mb-16 text-center">
+                        <h2 className="mb-4 text-3xl font-black tracking-tight text-brand-navy md:text-5xl">Why shop with us?</h2>
+                        <div className="mx-auto h-1.5 w-24 rounded-full bg-brand-yellow" />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                         {[
-                            { title: '100% Genuine Products', desc: 'Every product we sell is sourced directly from authorized distributors and manufacturers.', bg: 'bg-blue-50', text: 'text-blue-700' },
-                            { title: 'Best Prices Guaranteed', desc: 'We offer competitive pricing with regular discounts, deals, and special promotions.', bg: 'bg-brand-purple/5', text: 'text-brand-purple' },
-                            { title: 'Fast Delivery', desc: 'We deliver across Bangladesh with express shipping options available for urgent orders.', bg: 'bg-green-50', text: 'text-green-700' },
-                            { title: 'After-Sales Support', desc: 'Our dedicated support team is always ready to help you with any queries or issues.', bg: 'bg-orange-50', text: 'text-orange-700' },
+                            {
+                                title: '100% Genuine Products',
+                                desc: 'Products sourced through authorized channels whenever applicable, with clear warranty information.',
+                                tone: 'bg-brand-paper text-brand-navy',
+                            },
+                            {
+                                title: 'Competitive Pricing',
+                                desc: 'Fair pricing with regular promotions and seasonal deals.',
+                                tone: 'bg-brand-navy/5 text-brand-navy',
+                            },
+                            {
+                                title: 'Delivery nationwide',
+                                desc: 'Shipping options across Bangladesh, with express choices where available.',
+                                tone: 'bg-brand-paper text-brand-navy',
+                            },
+                            {
+                                title: 'After-sales support',
+                                desc: 'Our support team is here to help with order and product questions.',
+                                tone: 'bg-brand-paper text-brand-navy',
+                            },
                         ].map((item, i) => (
-                            <div key={i} className="group bg-white p-8 rounded-[2rem] border-2 border-gray-50 hover:border-brand-purple/20 hover:shadow-xl transition-all duration-300">
-                                <div className={`w-14 h-14 ${item.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300`}>
-                                    <span className={`${item.text} font-black text-xl`}>{i + 1}</span>
+                            <div
+                                key={i}
+                                className="group rounded-[2rem] border-2 border-brand-gray-border bg-white p-8 transition-all duration-300 hover:border-brand-navy/30 hover:shadow-xl"
+                            >
+                                <div
+                                    className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-brand-gray-border transition duration-300 group-hover:scale-110 ${item.tone}`}
+                                >
+                                    <span className="text-xl font-black">{i + 1}</span>
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 mb-4 leading-tight">{item.title}</h3>
-                                <p className="text-gray-600 leading-relaxed text-sm">{item.desc}</p>
+                                <h3 className="mb-4 text-xl font-bold leading-tight text-brand-navy">{item.title}</h3>
+                                <p className="text-sm leading-relaxed text-brand-muted">{item.desc}</p>
                             </div>
                         ))}
                     </div>
                 </section>
 
-                {/* Final CTA */}
-                <div className="text-center bg-gray-50 rounded-[3rem] p-12 md:p-20 border border-gray-100 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-brand-purple via-blue-600 to-purple-800"></div>
-                    <p className="text-brand-purple font-black tracking-[0.2em] mb-4">WANT TO KNOW MORE?</p>
-                    <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-8 max-w-2xl mx-auto">We're here to help you upgrade your digital world.</h2>
-                    <Link href="/contact" className="inline-block bg-gray-900 text-white font-black px-12 py-5 rounded-2xl hover:bg-gray-800 active:scale-95 transition-all shadow-2xl text-lg uppercase tracking-wider relative z-10">
-                        Get in Touch
+                <div className="relative overflow-hidden rounded-[2rem] border border-brand-gray-border bg-white p-12 text-center shadow-[0_12px_40px_rgba(30,45,74,0.08)] md:p-20">
+                    <div className="absolute left-0 top-0 h-1.5 w-full bg-gradient-to-r from-brand-navy via-brand-yellow to-brand-navy-deep" />
+                    <p className="mb-4 text-xs font-black uppercase tracking-[0.2em] text-brand-navy">Want to know more?</p>
+                    <h2 className="mx-auto mb-8 max-w-2xl text-3xl font-black text-brand-navy md:text-5xl">
+                        We&apos;re here to help you upgrade your digital world.
+                    </h2>
+                    <Link
+                        href="/contact"
+                        className="relative z-10 inline-block rounded-2xl bg-brand-navy px-12 py-5 text-lg font-black uppercase tracking-wider text-white shadow-xl shadow-brand-navy/30 transition-colors hover:bg-brand-navy-deep active:scale-[0.98]"
+                    >
+                        Get in touch
                     </Link>
                 </div>
             </div>

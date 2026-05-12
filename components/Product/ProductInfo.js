@@ -1,17 +1,15 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { FiMinus, FiPlus, FiShare2, FiHeart, FiCreditCard, FiGift, FiFileText, FiShuffle } from 'react-icons/fi';
-import { FaWhatsapp } from 'react-icons/fa';
+import { Minus, Plus, MessageCircle, ShoppingCart, Truck } from 'lucide-react';
+import PdpHeaderRail from './pdp/PdpHeaderRail';
 import { useCart } from '../../context/CartContext';
 import { useCompare } from '../../context/CompareContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useBrandCache } from '../../context/BrandCacheContext';
 import toast from 'react-hot-toast';
-import ApplexCare from './ApplexCare';
 
 const BRAND_FALLBACK_LOGOS = [
     { match: ['apple', 'iphone', 'ipad', 'macbook', 'imac'], logo: 'https://cdn.simpleicons.org/apple/111827' },
@@ -44,7 +42,7 @@ const getBrandFallbackLogo = (brandName = '') => {
     return found?.logo || null;
 };
 /** Same key as app/category/[slug]/page.js */
-const APLEX_LAST_CATEGORY_STORAGE_KEY = 'applex_last_category_context';
+const APLEX_LAST_CATEGORY_STORAGE_KEY = 'mobile_hat_last_category_context';
 
 const normalizeTaka = (value) => {
     if (value === null || value === undefined || value === '') return '';
@@ -78,11 +76,9 @@ function applyProductLevelDiscount(listPrice, product) {
 
 export default function ProductInfo({
     product,
+    suppressProductTitle = false,
     onVariantImageChange,
     selectedCarePlans = [],
-    toggleCarePlan,
-    onOpenEmiModal,
-    emiOpenTrigger = 0,
 }) {
     const { addToCart } = useCart();
     const router = useRouter();
@@ -317,28 +313,10 @@ export default function ProductInfo({
             ? regularPriceFromData
             : Math.round(offerPrice * 1.1);
 
-        const catBlob = `${product?.category?.name || ''} ${product?.category?.slug || ''}`.toLowerCase();
-        const isPhoneCategory = (() => {
-            if (!catBlob.trim()) return false;
-            if (catBlob.includes('headphone') || catBlob.includes('earphone') || catBlob.includes('airpods')) return false;
-            if (catBlob.includes('iphone')) return true;
-            if (catBlob.includes('smartphone') || catBlob.includes('smart phone')) return true;
-            if (catBlob.includes('mobile')) return true;
-            if (/\bphones?\b/.test(catBlob)) return true;
-            return false;
-        })();
-
-        let minBooking = Math.max(1000, Math.floor((offerPrice * 0.12) / 500) * 500);
-        let purchasePoints = Math.max(10, Math.floor((offerPrice / 1200) / 10) * 10);
-        if (isPhoneCategory) {
-            minBooking = 10000;
-            purchasePoints = 15;
-        }
-
         const emiMonthly = Math.max(1, Math.round(regularPrice / 12));
 
-        return { offerPrice, regularPrice, minBooking, purchasePoints, emiMonthly };
-    }, [currentPriceNumber, product.originalPrice, product?.category?.name, product?.category?.slug]);
+        return { offerPrice, regularPrice, emiMonthly };
+    }, [currentPriceNumber, product.originalPrice]);
 
     const matchedBrand = useMemo(() => {
         const currentBrandName = product.brand?.name?.trim();
@@ -424,93 +402,22 @@ export default function ProductInfo({
 
     return (
         <div className="flex flex-col">
-            {/* Header: Title + Compare/Share */}
-            <div className="mb-5 flex items-start justify-between gap-4">
-                <div>
-                    {matchedBrand?.name && (
-                        brandListingHref ? (
-                            <Link
-                                href={brandListingHref}
-                                className="mb-2 inline-flex items-center gap-2 hover:opacity-80 transition-opacity"
-                            >
-                                {matchedBrand.image ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img
-                                        src={matchedBrand.image}
-                                        alt={matchedBrand.name}
-                                        className="w-4 h-4 object-contain"
-                                    />
-                                ) : (
-                                    <span className="w-4 h-4 rounded-full bg-gray-200" />
-                                )}
-                                <span className="text-[12px] font-black text-gray-900 uppercase tracking-tight">
-                                    {matchedBrand.name}
-                                </span>
-                            </Link>
-                        ) : matchedBrand.id ? (
-                            <Link
-                                href={`/brand/${matchedBrand.id}`}
-                                className="mb-2 inline-flex items-center gap-2 hover:opacity-80 transition-opacity"
-                            >
-                                {matchedBrand.image ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img
-                                        src={matchedBrand.image}
-                                        alt={matchedBrand.name}
-                                        className="w-4 h-4 object-contain"
-                                    />
-                                ) : (
-                                    <span className="w-4 h-4 rounded-full bg-gray-200" />
-                                )}
-                                <span className="text-[12px] font-black text-gray-900 uppercase tracking-tight">
-                                    {matchedBrand.name}
-                                </span>
-                            </Link>
-                        ) : (
-                            <div className="mb-2 inline-flex items-center gap-2">
-                                {matchedBrand.image ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img
-                                        src={matchedBrand.image}
-                                        alt={matchedBrand.name}
-                                        className="w-4 h-4 object-contain"
-                                    />
-                                ) : (
-                                    <span className="w-4 h-4 rounded-full bg-gray-200" />
-                                )}
-                                <span className="text-[12px] font-black text-gray-900 uppercase tracking-tight">
-                                    {matchedBrand.name}
-                                </span>
-                            </div>
-                        )
-                    )}
-                    <h1 className="text-[22px] md:text-[28px] font-bold text-gray-900 tracking-tight leading-tight">
-                        {product.name}
-                    </h1>
-                </div>
-                <div className="shrink-0 flex items-center gap-2">
-                    <button
-                        onClick={handleAddToCompare}
-                        className="inline-flex items-center gap-1.5 px-1 py-1 text-[13px] md:text-[14px] font-bold text-[#ff7a00] hover:text-[#e66e00] transition-colors"
-                    >
-                        <FiShuffle size={16} />
-                        Add to Compare
-                    </button>
-                    <button
-                        onClick={handleShare}
-                        className="p-2.5 border border-gray-200 rounded-lg bg-white text-gray-600 hover:text-blue-600 hover:border-blue-300 transition-colors"
-                        aria-label="Share product"
-                    >
-                        <FiShare2 size={16} />
-                    </button>
-                </div>
-            </div>
+            <PdpHeaderRail
+                suppressProductTitle={suppressProductTitle}
+                product={product}
+                matchedBrand={matchedBrand}
+                brandListingHref={brandListingHref}
+                handleAddToCompare={handleAddToCompare}
+                handleShare={handleShare}
+                isWishlisted={isWishlisted}
+                onToggleWishlist={toggleWishlist}
+            />
 
             {/* Price section */}
-            <div className="mb-6 pb-6 border-b border-gray-100">
+            <div className="mb-6 border-b border-brand-gray-border/80 pb-6">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-wrap items-baseline gap-3">
-                        <span className="inline-flex items-baseline gap-0.5 text-[26px] md:text-[30px] font-bold text-gray-900 tracking-tight">
+                        <span className="inline-flex items-baseline gap-0.5 text-[26px] font-bold tracking-tight text-brand-navy md:text-[30px]">
                             <span
                                 className="font-black leading-none"
                                 style={{ fontFamily: "'Hind Siliguri','Noto Sans Bengali','Arial',sans-serif" }}
@@ -519,11 +426,11 @@ export default function ProductInfo({
                             </span>
                             <span>{displayPriceAmount}</span>
                         </span>
-                        <span className="text-xs md:text-sm text-gray-900 font-bold">
+                        <span className="text-xs font-bold text-brand-muted md:text-sm">
                             (Cash Price)
                         </span>
                         {displayOldPrice && (
-                            <span className="inline-flex items-baseline gap-0.5 text-xs md:text-sm text-gray-900 font-medium line-through">
+                            <span className="inline-flex items-baseline gap-0.5 text-xs font-medium text-brand-muted line-through md:text-sm">
                                 <span
                                     className="font-semibold leading-none"
                                     style={{ fontFamily: "'Hind Siliguri','Noto Sans Bengali','Arial',sans-serif" }}
@@ -534,20 +441,20 @@ export default function ProductInfo({
                             </span>
                         )}
                         {product.hasDiscount && saveAmount > 0 && (
-                            <span className="text-xs font-black text-white bg-[#ff7a00] px-2.5 py-1 rounded-md uppercase tracking-wide">
+                            <span className="rounded-md bg-brand-yellow px-2.5 py-1 text-xs font-black uppercase tracking-wide text-brand-navy">
                                 Save {saveAmount.toLocaleString('en-IN')}
                             </span>
                         )}
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 text-[11px] md:text-[12px] text-gray-800">
+                    <div className="flex flex-wrap items-center gap-2 text-[11px] text-brand-muted md:text-[12px]">
                         <span className="inline-flex items-center gap-1">
                             <span className="font-bold">Availability:</span>
-                            <span className="font-bold text-gray-900">In Stock</span>
+                            <span className="font-bold text-brand-navy">In Stock</span>
                         </span>
-                        <span className="text-gray-300">|</span>
+                        <span className="text-brand-gray-border">|</span>
                         <span className="inline-flex items-center gap-1">
                             <span className="font-bold">Code:</span>
-                            <span className="font-bold text-gray-900">{product.sku || 'N/A'}</span>
+                            <span className="font-bold text-brand-navy">{product.sku || 'N/A'}</span>
                         </span>
                     </div>
                 </div>
@@ -560,38 +467,30 @@ export default function ProductInfo({
                     {/* Colors — use actual color swatches */}
                     {allColors.length > 0 && (
                         <div>
-                            <h3 className="text-xs font-black text-gray-400 mb-4 uppercase tracking-widest">
-                                Pick a Color: <span className="text-[#ff8a00]">{selectedColor || ''}</span>
+                            <h3 className="mb-3 text-xs font-black uppercase tracking-widest text-brand-muted md:mb-4">
+                                Pick a Color: <span className="text-brand-navy">{selectedColor || ''}</span>
                             </h3>
-                            <div className="flex flex-wrap gap-3">
+                            <div className="flex flex-wrap gap-2 md:gap-3">
                                 {allColors.map(color => {
                                     const isSelected = selectedColor === color.name;
                                     const isWhite = color.hex?.toLowerCase() === '#ffffff' || color.hex?.toLowerCase() === '#fff';
-                                    const selectedAccent = isWhite ? '#d1d5db' : color.hex || '#ff8a00';
                                     return (
                                         <button
                                             key={color.name}
+                                            type="button"
                                             onClick={() => setSelectedColor(color.name)}
-                                            className={`cursor-pointer flex items-center gap-3 px-4 py-3 rounded-lg border transition-all duration-300 ${isSelected
-                                                ? 'bg-white shadow-md'
-                                                : 'border-gray-200 hover:border-[#ffb347] bg-white hover:shadow-sm'
-                                                }`}
-                                            style={
+                                            className={`flex cursor-pointer items-center rounded-lg border-2 transition-all duration-300 gap-2 px-2.5 py-1.5 md:gap-3 md:px-4 md:py-3 ${
                                                 isSelected
-                                                    ? {
-                                                        borderColor: selectedAccent,
-                                                        backgroundColor: `${selectedAccent}14`,
-                                                        boxShadow: `0 6px 14px ${selectedAccent}22`,
-                                                    }
-                                                    : undefined
-                                            }
+                                                    ? 'border-brand-navy bg-white shadow-md shadow-brand-navy/15'
+                                                    : 'border-brand-gray-border bg-white hover:border-brand-yellow hover:shadow-sm'
+                                            }`}
                                             title={color.name}
                                         >
                                             <span
-                                                className={`w-6 h-6 rounded-full shadow-inner ${isWhite ? 'border border-gray-200' : ''}`}
+                                                className={`h-4 w-4 shrink-0 rounded-full shadow-inner md:h-6 md:w-6 ${isWhite ? 'border border-brand-gray-border' : ''}`}
                                                 style={{ backgroundColor: color.hex }}
                                             />
-                                            <span className={`text-sm font-black ${isSelected ? 'text-black' : 'text-gray-500'}`}>
+                                            <span className={`text-[11px] font-black leading-tight md:text-sm ${isSelected ? 'text-brand-navy' : 'text-brand-muted'}`}>
                                                 {color.name}
                                             </span>
                                         </button>
@@ -604,8 +503,8 @@ export default function ProductInfo({
                     {/* Storage / Size */}
                     {allStorages.length > 0 && (
                         <div>
-                            <h3 className="text-xs font-black text-gray-400 mb-4 uppercase tracking-widest">
-                                Storage: <span className="text-[#ff8a00]">{selectedStorage || ''}</span>
+                            <h3 className="mb-3 text-xs font-black uppercase tracking-widest text-brand-muted md:mb-4">
+                                Storage: <span className="text-brand-navy">{selectedStorage || ''}</span>
                             </h3>
                             <div className="flex flex-wrap gap-3">
                                 {allStorages.map(size => {
@@ -614,13 +513,14 @@ export default function ProductInfo({
                                     return (
                                         <button
                                             key={size}
+                                            type="button"
                                             onClick={() => isAvailable && setSelectedStorage(size)}
                                             disabled={!isAvailable}
-                                            className={`cursor-pointer px-6 py-3 rounded-lg text-xs font-black uppercase tracking-widest border transition-all duration-300 ${isSelected
-                                                ? 'border-[#ff8a00] bg-[#ff8a00] text-white shadow-lg shadow-[#ff8a00]/25'
+                                            className={`cursor-pointer rounded-lg border px-6 py-3 text-xs font-black uppercase tracking-widest transition-all duration-300 ${isSelected
+                                                ? 'border-brand-navy bg-brand-navy text-white shadow-lg shadow-brand-navy/25'
                                                 : isAvailable
-                                                    ? 'border-gray-200 bg-white text-gray-600 hover:border-[#ffb347] hover:shadow-sm'
-                                                    : 'border-gray-50 text-gray-300 cursor-not-allowed bg-gray-50/50'
+                                                    ? 'border-brand-gray-border bg-white text-brand-muted hover:border-brand-yellow hover:shadow-sm'
+                                                    : 'cursor-not-allowed border-brand-gray-border/50 bg-brand-paper/80 text-brand-muted/50'
                                                 }`}
                                         >
                                             {size}
@@ -634,8 +534,8 @@ export default function ProductInfo({
                     {/* Region */}
                     {allRegions.length > 0 && (
                         <div>
-                            <h3 className="text-xs font-black text-gray-400 mb-4 uppercase tracking-widest">
-                                Region: <span className="text-[#ff8a00]">{selectedRegion || ''}</span>
+                            <h3 className="mb-3 text-xs font-black uppercase tracking-widest text-brand-muted md:mb-4">
+                                Region: <span className="text-brand-navy">{selectedRegion || ''}</span>
                             </h3>
                             <div className="flex flex-wrap gap-2">
                                 {allRegions.map(region => {
@@ -644,13 +544,14 @@ export default function ProductInfo({
                                     return (
                                         <button
                                             key={region}
+                                            type="button"
                                             onClick={() => isAvailable && setSelectedRegion(region)}
                                             disabled={!isAvailable}
-                                            className={`cursor-pointer px-5 py-3 rounded-lg text-[11px] font-black uppercase tracking-wider border transition-all duration-300 ${isSelected
-                                                ? 'border-[#ff8a00] text-[#ff8a00] bg-[#fff7ed] shadow-md shadow-[#ff8a00]/10'
+                                            className={`cursor-pointer rounded-lg border px-5 py-3 text-[11px] font-black uppercase tracking-wider transition-all duration-300 ${isSelected
+                                                ? 'border-brand-navy bg-brand-paper text-brand-navy shadow-md shadow-brand-navy/10'
                                                 : isAvailable
-                                                    ? 'border-gray-200 bg-white text-gray-500 hover:border-[#ffb347] hover:shadow-sm'
-                                                    : 'border-gray-50 text-gray-300 cursor-not-allowed bg-gray-50/50 grayscale'
+                                                    ? 'border-brand-gray-border bg-white text-brand-muted hover:border-brand-yellow hover:shadow-sm'
+                                                    : 'cursor-not-allowed border-brand-gray-border/50 bg-brand-paper/80 text-brand-muted/50 grayscale'
                                                 }`}
                                         >
                                             {region}
@@ -663,226 +564,101 @@ export default function ProductInfo({
                 </div>
             )}
 
-            {/* Price Benefits */}
-            <div className="mb-6 space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-                    {/* Minimum Booking */}
-                    <div className="flex items-center gap-3 rounded-lg bg-[#fef8ee] border border-[#f3ead8] px-3 py-3.5 transition-all hover:shadow-sm">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-white text-[#ff8a00] shadow-sm">
-                            <FiCreditCard size={16} />
-                        </div>
-                        <div>
-                            <p className="text-[11px] font-medium text-gray-500 leading-tight">Minimum Booking</p>
-                            <p className="text-[14px] md:text-[15px] font-black text-gray-900 leading-tight">
-                                {pricingStats.minBooking.toLocaleString('en-IN')} BDT
-                            </p>
-                        </div>
+            {/* Primary commerce — after variant selection */}
+            <div className="mb-6 border-b border-brand-gray-border/80 pb-6">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch sm:gap-3">
+                    <div className="flex h-12 w-full shrink-0 items-center justify-between self-center rounded-lg border border-brand-gray-border bg-brand-paper px-1 sm:h-auto sm:min-h-12 sm:w-[112px] sm:self-stretch sm:py-0">
+                        <button
+                            type="button"
+                            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                            className="flex size-10 cursor-pointer items-center justify-center rounded-md text-brand-muted transition-all hover:bg-white hover:text-brand-navy sm:size-9"
+                        >
+                            <Minus className="size-4" strokeWidth={2} />
+                        </button>
+                        <span className="min-w-8 text-center text-sm font-black tabular-nums text-brand-navy">{quantity}</span>
+                        <button
+                            type="button"
+                            onClick={() => setQuantity(quantity + 1)}
+                            className="flex size-10 cursor-pointer items-center justify-center rounded-md text-brand-muted transition-all hover:bg-white hover:text-brand-navy sm:size-9"
+                        >
+                            <Plus className="size-4" strokeWidth={2} />
+                        </button>
                     </div>
 
-                    {/* Purchase Points */}
-                    <div className="flex items-center gap-3 rounded-lg bg-[#fef8ee] border border-[#f3ead8] px-3 py-3.5 transition-all hover:shadow-sm">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-white text-[#ff8a00] shadow-sm">
-                            <FiGift size={16} />
-                        </div>
-                        <div>
-                            <p className="text-[11px] font-medium text-gray-500 leading-tight">Purchase Points</p>
-                            <p className="text-[14px] md:text-[15px] font-black text-gray-900 leading-tight">
-                                {pricingStats.purchasePoints} Points
-                            </p>
-                        </div>
+                    <div className="flex min-h-12 min-w-0 flex-1 gap-2">
+                        <button
+                            type="button"
+                            onClick={handleAddToCart}
+                            className="inline-flex h-12 min-h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-brand-navy bg-white px-3 text-[13px] font-bold leading-none tracking-tight text-brand-navy transition-all hover:bg-brand-paper sm:min-h-12"
+                        >
+                            <ShoppingCart className="size-[18px] shrink-0" strokeWidth={2} aria-hidden />
+                            <span className="whitespace-nowrap">Add to Cart</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleBuyNow}
+                            className="inline-flex h-12 min-h-12 min-w-0 flex-[1.2] cursor-pointer items-center justify-center rounded-xl bg-brand-navy px-3 text-[13px] font-bold leading-none tracking-tight text-white shadow-lg shadow-brand-navy/25 transition-all hover:bg-brand-navy-deep sm:min-h-12"
+                        >
+                            <span className="whitespace-nowrap">Buy Now</span>
+                        </button>
                     </div>
                 </div>
 
-                {/* 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-                    <button
-                        type="button"
-                        onClick={() => setSelectedPricingMode('offer')}
-                        className={`flex items-center gap-4 text-left rounded-xl border-2 p-4 transition-all ${selectedPricingMode === 'offer'
-                            ? 'border-[#3b82f6] bg-white shadow-md'
-                            : 'border-gray-100 bg-[#f8f9fa] hover:border-gray-200'
-                            }`}
-                    >
-                        <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${selectedPricingMode === 'offer'
-                            ? 'border-[#3b82f6] bg-[#3b82f6]/5 text-[#3b82f6]'
-                            : 'border-gray-300 bg-white text-gray-300'
-                            }`}>
-                            {selectedPricingMode === 'offer' ? (
-                                <div className="h-2.5 w-2.5 rounded-full bg-[#3b82f6]" />
-                            ) : (
-                                <div className="h-2.5 w-2.5 rounded-full bg-transparent" />
-                            )}
-                        </div>
-                        <div>
-                            <p className="text-[12px] font-medium text-gray-500 mb-0.5">Offer Price</p>
-                            <p className={`text-[18px] md:text-[20px] font-black leading-tight ${selectedPricingMode === 'offer' ? 'text-gray-900' : 'text-gray-700'}`}>
-                                {pricingStats.offerPrice.toLocaleString('en-IN')} BDT
-                            </p>
-                            <p className="text-[11px] text-gray-400 mt-0.5">Cash/Card/MFS Payment</p>
-                        </div>
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={() => setSelectedPricingMode('regular')}
-                        className={`flex items-center gap-4 text-left rounded-xl border-2 p-4 transition-all ${selectedPricingMode === 'regular'
-                            ? 'border-[#3b82f6] bg-white shadow-md'
-                            : 'border-gray-100 bg-[#f8f9fa] hover:border-gray-200'
-                            }`}
-                    >
-                        <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${selectedPricingMode === 'regular'
-                            ? 'border-[#3b82f6] bg-[#3b82f6]/5 text-[#3b82f6]'
-                            : 'border-gray-300 bg-white text-gray-300'
-                            }`}>
-                            {selectedPricingMode === 'regular' ? (
-                                <div className="h-2.5 w-2.5 rounded-full bg-[#3b82f6]" />
-                            ) : (
-                                <div className="h-2.5 w-2.5 rounded-full bg-transparent" />
-                            )}
-                        </div>
-                        <div>
-                            <p className="text-[12px] font-medium text-gray-500 mb-0.5">Regular Price</p>
-                            <p className={`text-[18px] md:text-[20px] font-black leading-tight ${selectedPricingMode === 'regular' ? 'text-gray-900' : 'text-gray-700'}`}>
-                                {pricingStats.regularPrice.toLocaleString('en-IN')} BDT
-                            </p>
-                            <p className="text-[11px] text-gray-400 mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
-                                EMI starts at {pricingStats.emiMonthly.toLocaleString('en-IN')} BDT
-                            </p>
-                        </div>
-                    </button>
-                </div>
-                */}
+                <p className="mt-3 flex items-center justify-center gap-2 border-t border-brand-gray-border/60 pt-3 text-center text-[11px] font-semibold leading-snug text-brand-muted sm:justify-start md:text-xs">
+                    <Truck className="size-3.5 shrink-0 text-brand-navy" strokeWidth={2} aria-hidden />
+                    <span>
+                        Shipping within <span className="font-black text-brand-navy">0–3 business days</span>
+                    </span>
+                </p>
             </div>
 
-            {/* Mobile-only Applex Care (Hidden on Desktop) */}
-            <div className="lg:hidden mb-10">
-                <ApplexCare 
-                    product={product} 
-                    currentPrice={currentPriceNumber}
-                    selectedCarePlans={selectedCarePlans}
-                    toggleCarePlan={toggleCarePlan}
-                    openEmiTrigger={emiOpenTrigger}
-                />
-            </div>
-
-            {/* Add to Cart / Buy Now */}
-            <div className="flex flex-row items-stretch gap-3 mt-4">
-                {/* Quantity */}
-                <div className="flex items-center justify-between border border-gray-200 rounded-md py-1 px-1 w-[120px] shrink-0 bg-[#f5f5f5]">
-                    <button
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="cursor-pointer w-9 h-9 flex items-center justify-center text-gray-500 hover:text-[#ff8a00] hover:bg-white rounded-md transition-all"
-                    >
-                        <FiMinus size={16} />
-                    </button>
-                    <span className="font-black text-gray-900 w-8 text-center text-sm">{quantity}</span>
-                    <button
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="cursor-pointer w-9 h-9 flex items-center justify-center text-gray-500 hover:text-[#ff8a00] hover:bg-white rounded-md transition-all"
-                    >
-                        <FiPlus size={16} />
-                    </button>
-                </div>
-
-                <button
-                    onClick={handleAddToCart}
-                    className="cursor-pointer flex-1 bg-white border border-[#ffd8ad] text-gray-800 font-bold py-4 px-3 rounded-md hover:bg-[#fff7ed] transition-all text-[13px] tracking-tight inline-flex items-center justify-center gap-2"
-                >
-                    <Image
-                        src="/product-details-svg/add%20to%20crat.svg"
-                        alt="Add to cart"
-                        width={18}
-                        height={18}
-                        className="w-[18px] h-[18px] object-contain"
-                    />
-                    Add to Cart
-                </button>
-
-                <button
-                    onClick={handleBuyNow}
-                    className="cursor-pointer flex-[1.4] bg-[#ff8a00] text-white font-bold py-4 px-2 rounded-md hover:bg-[#ea7f00] shadow-lg shadow-[#ff8a00]/30 transition-all text-[13px] tracking-tight"
-                >
-                    Buy Now
-                </button>
-            </div>
-
-            {/* Shipping row */}
-            <div className="mt-6 pt-6 border-t border-gray-100">
-                <div className="w-full border border-gray-200 rounded-xl bg-white px-4 py-3 flex items-center justify-between gap-3">
-                    <p className="text-sm md:text-base font-bold text-gray-900">
-                        Reach you within <span className="text-[#ff8a00]">0-3 business days</span>
-                    </p>
-                    <button
-                        onClick={() => toggleWishlist(product)}
-                        className="h-10 w-10 rounded-md bg-gray-50 border border-gray-200 flex items-center justify-center hover:text-red-500 transition-colors shrink-0"
-                        title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                    >
-                        <FiHeart
-                            className={`transition-all ${isWishlisted ? 'text-red-500 fill-red-500 scale-110' : 'text-gray-500'}`}
-                            size={18}
-                        />
-                    </button>
-                </div>
-            </div>
-
-            {/* Contact + Social row */}
+            {/* Contact + Social row (icons only — links removed) */}
             <div className="mt-3 flex items-center gap-3">
-                <a
-                    href="https://wa.me/8801704212066"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-md border border-gray-200 bg-[#dcfce7] text-gray-900 hover:text-[#25d366] hover:border-[#25d366]/40 transition-colors"
+                <span
+                    className="inline-flex flex-1 cursor-default items-center justify-center gap-2 rounded-xl border border-brand-gray-border bg-white px-4 py-3 text-gray-900 select-none"
                     aria-label="WhatsApp"
                 >
-                    <FaWhatsapp size={20} />
+                    <MessageCircle className="size-5 shrink-0 text-emerald-600" strokeWidth={2} />
                     <span className="text-sm font-bold">WhatsApp</span>
-                </a>
+                </span>
                 <div className="flex items-center gap-2">
-                    <a
-                        href="https://web.facebook.com/Applex.bd"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-14 h-12 rounded-md border border-gray-200 bg-white flex items-center justify-center transition-all duration-200 hover:border-[#ffb347] hover:bg-[#fff7ed]"
-                        aria-label="Applex Facebook"
+                    <span
+                        className="flex h-12 w-14 cursor-default items-center justify-center rounded-md border border-brand-gray-border bg-white select-none"
+                        aria-label="Facebook"
                     >
                         <Image
                             src="/product-details-svg/2023_Facebook_icon.svg"
-                            alt="Facebook"
+                            alt=""
                             width={20}
                             height={20}
-                            className="w-5 h-5 object-contain"
+                            className="h-5 w-5 object-contain"
                         />
-                    </a>
-                    <a
-                        href="https://www.tiktok.com/@applexofficialbd"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-14 h-12 rounded-md border border-gray-200 bg-white flex items-center justify-center transition-all duration-200 hover:border-[#ffb347] hover:bg-[#fff7ed]"
-                        aria-label="Applex TikTok"
+                    </span>
+                    <span
+                        className="flex h-12 w-14 cursor-default items-center justify-center rounded-md border border-brand-gray-border bg-white select-none"
+                        aria-label="TikTok"
                     >
                         <Image
                             src="/product-details-svg/tiktok-solo-icon.svg"
-                            alt="TikTok"
+                            alt=""
                             width={20}
                             height={20}
-                            className="w-5 h-5 object-contain"
+                            className="h-5 w-5 object-contain"
                         />
-                    </a>
-                    <a
-                        href="https://www.youtube.com/@user-lh5pe6ug2b"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-14 h-12 rounded-md border border-gray-200 bg-white flex items-center justify-center transition-all duration-200 hover:border-[#ffb347] hover:bg-[#fff7ed]"
-                        aria-label="Applex YouTube"
+                    </span>
+                    <span
+                        className="flex h-12 w-14 cursor-default items-center justify-center rounded-md border border-brand-gray-border bg-white select-none"
+                        aria-label="YouTube"
                     >
                         <Image
                             src="/product-details-svg/youtube-color-icon.svg"
-                            alt="YouTube"
+                            alt=""
                             width={20}
                             height={20}
-                            className="w-5 h-5 object-contain"
+                            className="h-5 w-5 object-contain"
                         />
-                    </a>
+                    </span>
                 </div>
             </div>
         </div>

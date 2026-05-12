@@ -112,6 +112,11 @@ export default function Footer() {
                                 <h3 className="text-xs font-black uppercase tracking-[0.2em] text-brand-muted">Help</h3>
                                 <ul className="mt-4 space-y-2.5">
                                     <li>
+                                        <Link href="/contact" className="text-sm font-semibold text-brand-navy hover:text-brand-yellow-bright transition-colors">
+                                            Contact us
+                                        </Link>
+                                    </li>
+                                    <li>
                                         <Link href="/track-order" className="text-sm font-semibold text-brand-navy hover:text-brand-yellow-bright transition-colors">
                                             Track order
                                         </Link>
@@ -137,7 +142,11 @@ export default function Footer() {
 
                         <div className="lg:col-span-3 flex flex-col gap-6">
                             <div>
-                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-brand-muted">Contact</h3>
+                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-brand-muted">
+                                    <Link href="/contact" className="transition-colors hover:text-brand-navy">
+                                        Contact
+                                    </Link>
+                                </h3>
                                 <ul className="mt-4 space-y-4 text-sm">
                                     <li className="flex gap-3">
                                         <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-cream text-brand-navy">

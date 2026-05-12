@@ -14,8 +14,8 @@ export default function ProductSidebar() {
     };
 
     const warranties = [
-        { id: 1, title: "applex Care+ 1 Year", desc: "Brand New Parts Guarantee", price: "BDT 5,100" },
-        { id: 2, title: "applex Motor Care+ : 5 Years", desc: "Free motor replacement (excluding physical damage)", price: "BDT 6,120" },
+        { id: 1, title: "Care+ 1 Year", desc: "Brand New Parts Guarantee", price: "BDT 5,100" },
+        { id: 2, title: "Motor Care+ : 5 Years", desc: "Free motor replacement (excluding physical damage)", price: "BDT 6,120" },
         { id: 3, title: "1 Year Comprehensive Warranty", desc: "", price: "BDT 4,080" },
     ];
 
@@ -66,7 +66,7 @@ export default function ProductSidebar() {
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden mt-4 shadow-sm">
                 <div className="bg-black text-white px-4 py-3 font-bold flex items-center gap-2">
                     <svg className="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                    applex Care
+                    Protection plans
                 </div>
                 <div className="p-4 flex flex-col gap-3">
                     {warranties.map(warranty => (
@@ -88,7 +88,7 @@ export default function ProductSidebar() {
                 </div>
                 <div className="bg-gray-50 px-4 py-3 border-t border-gray-100 flex items-center gap-2">
                     <FiCheck className="text-green-500" />
-                    <span className="text-xs text-gray-600 font-medium tracking-wide">I agree to applex's <span className="underline cursor-pointer">terms & conditions</span></span>
+                    <span className="text-xs text-gray-600 font-medium tracking-wide">I agree to the <span className="underline cursor-pointer">terms & conditions</span></span>
                 </div>
             </div>
         </div>

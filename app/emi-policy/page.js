@@ -76,7 +76,7 @@ export default function EmiPolicyPage() {
         </div>
 
         <p className="mt-4 text-xs text-gray-500">
-          Disclaimer: Rates can be updated by banks without prior notice. Applex reserves the right to update this table to match latest partner bank instructions.
+          Disclaimer: Rates can be updated by banks without prior notice. Mobile Hat reserves the right to update this table to match latest partner bank instructions.
         </p>
       </div>
     </main>
