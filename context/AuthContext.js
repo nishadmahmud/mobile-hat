@@ -2,12 +2,10 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { customerLogin, customerRegister, updateCustomerProfile } from "../lib/api";
-import { useHomeNavigationLock } from "./HomeNavigationLockContext";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-    const { isLocked: isHomeNavLocked } = useHomeNavigationLock();
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -140,21 +138,11 @@ export function AuthProvider({ children }) {
         }
     }, [token, user]);
 
-    useEffect(() => {
-        if (isHomeNavLocked) {
-            setAuthModalOpen(false);
-        }
-    }, [isHomeNavLocked]);
-
     // Modal controls
-    const openAuthModal = useCallback(
-        (mode = "login") => {
-            if (isHomeNavLocked) return;
-            setAuthModalMode(mode);
-            setAuthModalOpen(true);
-        },
-        [isHomeNavLocked]
-    );
+    const openAuthModal = useCallback((mode = "login") => {
+        setAuthModalMode(mode);
+        setAuthModalOpen(true);
+    }, []);
 
     const closeAuthModal = useCallback(() => {
         setAuthModalOpen(false);

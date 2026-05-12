@@ -10,7 +10,6 @@ import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useBrandCache } from '../../context/BrandCacheContext';
-import { useHomeNavigationLock } from '../../context/HomeNavigationLockContext';
 import { searchProducts, getBestSellersFromServer } from '../../lib/api';
 import ProductCard from '../Shared/PremiumProductCard';
 
@@ -42,7 +41,6 @@ export default function Header({ categories = [] }) {
   const { wishlistCount } = useWishlist();
   const { getBrandsForCategory, isFetchingBrands } = useBrandCache();
   const router = useRouter();
-  const { isLocked: isHomeNavLocked } = useHomeNavigationLock();
 
   const searchContainerRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
@@ -191,7 +189,6 @@ export default function Header({ categories = [] }) {
   };
 
   const handleUserClick = () => {
-    if (isHomeNavLocked) return;
     if (user) {
       router.push('/profile');
     } else {
