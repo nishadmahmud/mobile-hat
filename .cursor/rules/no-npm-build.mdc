@@ -1,0 +1,10 @@
+---
+description: Do not run full production builds unless the user explicitly requests it
+alwaysApply: true
+---
+
+# No `npm run build`
+
+- Never run `npm run build` (or `pnpm run build` / `yarn build`) to verify the project unless the user **explicitly** asks for a production build.
+- Prefer `read_lints`, targeted tests, or `npm run lint` / `npm run dev` only when the user wants those checks.
+- If a build is needed, ask the user to run it locally or wait for them to request it.

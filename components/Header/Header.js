@@ -780,8 +780,9 @@ export default function Header({ categories = [] }) {
               </div>
             </div>
 
-            <nav className="no-scrollbar flex min-h-9 flex-1 items-center gap-0.5 overflow-x-auto py-0.5 lg:min-h-10 lg:gap-1">
-              <div className="flex min-w-0 items-center gap-0.5 lg:gap-1">
+            <div className="flex min-h-9 min-w-0 flex-1 items-center justify-center py-0.5 lg:min-h-10">
+              <nav className="no-scrollbar flex w-max max-w-full items-center gap-0.5 overflow-x-auto lg:gap-1">
+                <div className="flex shrink-0 items-center gap-0.5 lg:gap-1">
                 {displayCategories.map((cat, idx) => (
                   <div
                     key={cat.id || idx}
@@ -859,10 +860,11 @@ export default function Header({ categories = [] }) {
                     )}
                   </div>
                 ))}
-              </div>
-            </nav>
+                </div>
+              </nav>
+            </div>
 
-            <div className="ml-auto flex shrink-0 items-center">
+            <div className="flex shrink-0 items-center">
               <Link
                 href="/special-offers"
                 className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-slate-200 bg-white px-3 py-1.5 text-[12px] font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 lg:px-3.5 lg:py-2"
