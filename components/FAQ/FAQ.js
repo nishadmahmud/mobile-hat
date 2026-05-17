@@ -73,10 +73,10 @@ export default function FAQ() {
     };
 
     return (
-        <section className="w-full bg-[#E5F0F5] py-12 md:py-16">
+        <section className="w-full bg-brand-paper py-12 md:py-16">
             <div className="max-w-3xl mx-auto px-4 md:px-8">
-                <div className="w-full bg-[#1A9A67] py-4 md:py-5 rounded-lg text-center mb-8 shadow-sm">
-                    <h2 className="text-2xl md:text-4xl font-bold text-white tracking-wide">
+                <div className="mb-8 w-full rounded-lg bg-gradient-to-b from-brand-navy to-brand-navy-deep py-4 text-center shadow-sm md:py-5">
+                    <h2 className="text-2xl font-bold tracking-wide text-white md:text-4xl">
                         Frequently asked questions
                     </h2>
                 </div>
@@ -85,7 +85,7 @@ export default function FAQ() {
                     {FAQ_ITEMS.map((item, idx) => (
                         <div
                             key={idx}
-                            className="border-b border-[#C0D0DC]"
+                            className="border-b border-slate-200/90"
                         >
                             <button
                                 type="button"

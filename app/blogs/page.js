@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FiArrowRight, FiCalendar, FiClock, FiSearch } from 'react-icons/fi';
-import { getBlogs } from '../../lib/api';
+import { getBlogs, normalizeBlogPosts } from '../../lib/api';
 
 
 export default function BlogPage() {
@@ -16,11 +16,7 @@ export default function BlogPage() {
         async function fetchBlogs() {
             try {
                 const res = await getBlogs();
-                if (res?.success && res.data && res.data.length > 0) {
-                    setPosts(res.data);
-                } else {
-                    setPosts([]);
-                }
+                setPosts(normalizeBlogPosts(res));
             } catch (error) {
                 console.error("Failed to fetch blogs:", error);
                 setPosts([]);

@@ -1,4 +1,4 @@
-import { getBlogs } from '../../../lib/api';
+import { getBlogs, normalizeBlogPosts } from '../../../lib/api';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowLeft, FiCalendar, FiUser } from 'react-icons/fi';
@@ -9,9 +9,9 @@ export default async function BlogDetailPage({ params }) {
     let blog = null;
     try {
         const res = await getBlogs();
-        if (res?.success && res.data) {
-            blog = res.data.find(post => post.id.toString() === id.toString());
-        }
+        blog = normalizeBlogPosts(res).find(
+            (post) => post.id?.toString() === id.toString()
+        ) ?? null;
     } catch (error) {
         console.error("Error fetching blog from list:", error);
     }

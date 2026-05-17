@@ -19,11 +19,9 @@ import {
   getBannerFromServer,
   getBestDealsFromServer,
   getBestSellersFromServer,
-  getTopBrands
+  getTopBrands,
+  normalizeBlogPosts,
 } from "../lib/api";
-
-/** Set `true` when the homepage should list blog cards from `getBlogs` again. */
-const BLOG_TIPS_USE_API_POSTS = false;
 
 export default async function Home() {
   // Fetch API Data safely
@@ -208,15 +206,7 @@ export default async function Home() {
   const rawBrands = extractDataArray(brandsRes);
   const apiBrands = rawBrands ? rawBrands.map(mapBrandData) : [];
 
-  const blogsDataArray = Array.isArray(blogsRes?.data) ? blogsRes.data : (blogsRes?.data?.data || []);
-  const apiBlogs = blogsDataArray.length > 0 ? blogsDataArray.map(b => {
-    const rawImage = b.image || "/no-image.svg";
-    return {
-      id: b.id,
-      title: b.title,
-      image: typeof rawImage === 'string' ? rawImage.trim() : rawImage,
-    };
-  }) : [];
+  const apiBlogs = normalizeBlogPosts(blogsRes);
 
   // Construct final array of 5 banners (API data + high-quality fallbacks)
   const dummyBanners = [
@@ -252,7 +242,7 @@ export default async function Home() {
         newArrivals={apiNewArrivals ?? []}
         flashDeals={apiBestDeals ?? []}
       />
-      <BlogTips posts={BLOG_TIPS_USE_API_POSTS ? (apiBlogs ?? []) : []} />
+      <BlogTips posts={apiBlogs} />
 
       <Testimonials />
       <FAQ />

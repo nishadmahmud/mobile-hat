@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -44,6 +45,9 @@ export default function Header({ categories = [] }) {
 
   const searchContainerRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
+  const categoryItemRefs = useRef([]);
+  const [categoryFlyoutLayout, setCategoryFlyoutLayout] = useState(null);
+  const [categoryFlyoutMounted, setCategoryFlyoutMounted] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -110,52 +114,110 @@ export default function Header({ categories = [] }) {
   const normalizeCategory = (name = '') =>
     String(name).toLowerCase().replace(/&/g, 'and').replace(/\s+/g, ' ').trim();
 
-  const allowedHeaderCategories = new Set([
-    'iphone',
-    'andriod',
-    'android',
-    'macbook',
-    'ipad',
-    'earbuds',
-    'power bank',
-    'smart watch',
-    'adapters',
-    'used phone',
-  ]);
+  const getSubcategories = (cat) => {
+    if (!cat) return [];
+    if (Array.isArray(cat.sub_category) && cat.sub_category.length > 0) return cat.sub_category;
+    if (Array.isArray(cat.subcategories) && cat.subcategories.length > 0) return cat.subcategories;
+    if (Array.isArray(cat.sub_categories) && cat.sub_categories.length > 0) return cat.sub_categories;
+    return [];
+  };
 
-  const defaultCategories = [
-    { name: "iPhone", slug: "iphone" },
-    { name: "Android", slug: "andriod" },
-    { name: "MacBook", slug: "macbook" },
-    { name: "iPad", slug: "ipad" },
-    { name: "Earbuds", slug: "earbuds" },
-    { name: "Power Bank", slug: "power-bank" },
-    { name: "Smart Watch", slug: "smart-watch" },
-    { name: "Adapters", slug: "adapters" },
-    { name: "Used Phone", slug: "used-phone" },
-  ];
+  const enrichCategoryWithSubs = (cat) => {
+    const slug = cat.slug || String(cat.name || '').toLowerCase().replace(/\s+/g, '-');
+    const fromProps = (Array.isArray(categories) ? categories : []).find((c) => {
+      const propSlug = c.slug || String(c.category_name || c.name || '').toLowerCase().replace(/\s+/g, '-');
+      return propSlug === slug || normalizeCategory(c.category_name || c.name) === normalizeCategory(cat.name);
+    });
+    const subs = getSubcategories(cat);
+    if (subs.length > 0) return { ...cat, sub_category: subs };
+    const propSubs = getSubcategories(fromProps);
+    return propSubs.length > 0 ? { ...cat, sub_category: propSubs } : cat;
+  };
 
-  const filteredHeaderCategories = (Array.isArray(liveCategories) ? liveCategories : []).filter((cat) =>
-    allowedHeaderCategories.has(normalizeCategory(cat?.name))
-  );
+  const HEADER_RAIL_CATEGORY_COUNT = 8;
+  const HEADER_RAIL_EXTRA_CATEGORIES = ['Adapter', 'Power Bank'];
 
-  const baseCategories = filteredHeaderCategories.length >= 4 ? filteredHeaderCategories : defaultCategories;
-  
-  // Force show "Used Phone" if not already present in the list
-  const displayCategories = baseCategories.some(cat => normalizeCategory(cat?.name) === 'used phone')
-    ? baseCategories
-    : [...baseCategories, { name: "Used Phone", slug: "used-phone" }];
+  const categoryNamesMatch = (catName, wantedName) => {
+    const n = normalizeCategory(catName);
+    const w = normalizeCategory(wantedName);
+    if (n === w) return true;
+    if (w === 'adapter' && (n === 'adapter' || n === 'adapters')) return true;
+    if (w === 'power bank' && (n === 'power bank' || n.replace(/\s+/g, '') === 'powerbank')) return true;
+    return false;
+  };
+
+  const findCategoryInList = (list, wantedName) =>
+    list.find((cat) => categoryNamesMatch(cat.name || cat.category_name, wantedName));
+
+  const categoryRailKey = (cat) =>
+    cat.id || cat.category_id || normalizeCategory(cat.name || cat.category_name || '');
+
+  const allCategories = (() => {
+    const source =
+      Array.isArray(liveCategories) && liveCategories.length > 0
+        ? liveCategories
+        : Array.isArray(categories)
+          ? categories
+          : [];
+    return source.map((cat) => ({
+      ...cat,
+      name: cat.category_name || cat.name || 'Unknown',
+      slug:
+        cat.slug ||
+        cat.category_slug ||
+        String(cat.category_name || cat.name || '')
+          .toLowerCase()
+          .replace(/\s+/g, '-'),
+      image: (cat.image_path || cat.image_url || cat.image || '/no-image.svg').toString().trim(),
+      sub_category: cat.sub_category || cat.subcategories || cat.sub_categories || [],
+    }));
+  })();
+
+  const displayCategories = (() => {
+    const firstEight = allCategories.slice(0, HEADER_RAIL_CATEGORY_COUNT);
+    const seen = new Set(firstEight.map(categoryRailKey));
+    const extras = [];
+
+    for (const wantedName of HEADER_RAIL_EXTRA_CATEGORIES) {
+      const found = findCategoryInList(allCategories, wantedName);
+      const entry = found || {
+        name: wantedName,
+        slug: wantedName.toLowerCase().replace(/\s+/g, '-'),
+        sub_category: [],
+      };
+      const key = categoryRailKey(entry);
+      if (!seen.has(key)) {
+        seen.add(key);
+        extras.push(entry);
+      }
+    }
+
+    return [...firstEight, ...extras].map(enrichCategoryWithSubs);
+  })();
 
   const categoryIconMap = {
     'iphone': '/svg/apple logo.svg',
     'andriod': '/svg/android.svg',
     'android': '/svg/android.svg',
     'macbook': '/svg/laptop.svg',
+    'laptop': '/svg/laptop.svg',
+    'laptops': '/svg/laptop.svg',
+    'notebook': '/svg/laptop.svg',
     'ipad': '/svg/mobile.svg',
     'tab': '/svg/mobile.svg',
     'tablet': '/svg/mobile.svg',
+    'phone': '/svg/mobile.svg',
+    'phones': '/svg/mobile.svg',
+    'mobile': '/svg/mobile.svg',
+    'mobiles': '/svg/mobile.svg',
+    'smartphone': '/svg/mobile.svg',
     'earbuds': '/svg/earbuds.svg',
     'earbud': '/svg/earbuds.svg',
+    'airpods': '/svg/earbuds.svg',
+    'airpod': '/svg/earbuds.svg',
+    'sounds': '/svg/earbuds.svg',
+    'sound': '/svg/earbuds.svg',
+    'audio': '/svg/earbuds.svg',
     'power bank': '/svg/power bank.svg',
     'smart watch': '/svg/watch.svg',
     'charger combo': '/svg/cable.svg',
@@ -171,11 +233,34 @@ export default function Header({ categories = [] }) {
     'accessories': '/svg/mobile.svg',
   };
 
-  const getCategoryIcon = (name) => {
+  const resolveCategoryIconSrc = (name) => {
     const normalized = normalizeCategory(name);
+    if (categoryIconMap[normalized]) return categoryIconMap[normalized];
     const singular = normalized.endsWith('s') ? normalized.slice(0, -1) : normalized;
-    const iconSrc = categoryIconMap[normalized] || categoryIconMap[singular];
-    if (!iconSrc) return null;
+    if (categoryIconMap[singular]) return categoryIconMap[singular];
+
+    const keywordRules = [
+      [['iphone', 'apple'], '/svg/apple logo.svg'],
+      [['airpod', 'air pods'], '/svg/earbuds.svg'],
+      [['android', 'samsung', 'galaxy', 'pixel', 'oneplus', 'xiaomi'], '/svg/android.svg'],
+      [['macbook', 'laptop', 'notebook'], '/svg/laptop.svg'],
+      [['ipad', 'tablet', 'tab'], '/svg/mobile.svg'],
+      [['earbud', 'headphone', 'audio', 'sound', 'speaker'], '/svg/earbuds.svg'],
+      [['watch', 'wearable'], '/svg/watch.svg'],
+      [['power bank', 'powerbank', 'battery'], '/svg/power bank.svg'],
+      [['adapter', 'cable', 'charger'], '/svg/cable.svg'],
+      [['used phone', 'refurb'], '/svg/used phone.svg'],
+      [['phone', 'mobile', 'smartphone'], '/svg/mobile.svg'],
+      [['tv', 'cover', 'case', 'accessory'], '/svg/mobile.svg'],
+    ];
+    for (const [keywords, icon] of keywordRules) {
+      if (keywords.some((kw) => normalized.includes(kw))) return icon;
+    }
+    return '/svg/mobile.svg';
+  };
+
+  const getCategoryIcon = (name) => {
+    const iconSrc = resolveCategoryIconSrc(name);
     return (
       <Image
         src={iconSrc}
@@ -208,28 +293,76 @@ export default function Header({ categories = [] }) {
   const [allMenuSubcategoryId, setAllMenuSubcategoryId] = useState(null);
   const allMenuTimeoutRef = useRef(null);
 
-  const openMegaMenu = (idx) => {
+  const updateCategoryFlyoutLayout = (idx, el) => {
+    if (!el || typeof window === 'undefined') return;
+    const rect = el.getBoundingClientRect();
+    const alignEnd = idx >= displayCategories.length - 2;
+    setCategoryFlyoutLayout({
+      top: rect.bottom + 2,
+      left: alignEnd ? undefined : Math.max(8, rect.left),
+      right: alignEnd ? Math.max(8, window.innerWidth - rect.right) : undefined,
+    });
+  };
+
+  const openMegaMenu = (idx, el) => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
     }
+    if (allMenuTimeoutRef.current) {
+      clearTimeout(allMenuTimeoutRef.current);
+      allMenuTimeoutRef.current = null;
+    }
+    setAllMenuCategory(null);
     setHoverCategoryIndex(idx);
+    const anchor = el || categoryItemRefs.current[idx];
+    if (anchor) updateCategoryFlyoutLayout(idx, anchor);
   };
 
   const scheduleCloseMegaMenu = () => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-    }
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     hoverTimeoutRef.current = setTimeout(() => {
       setHoverCategoryIndex(null);
-    }, 300);
+      setCategoryFlyoutLayout(null);
+    }, 280);
   };
+
+  const cancelCloseMegaMenu = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    setCategoryFlyoutMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (hoverCategoryIndex === null) return undefined;
+    const reflow = () => {
+      const el = categoryItemRefs.current[hoverCategoryIndex];
+      if (el) updateCategoryFlyoutLayout(hoverCategoryIndex, el);
+    };
+    window.addEventListener('resize', reflow);
+    window.addEventListener('scroll', reflow, true);
+    return () => {
+      window.removeEventListener('resize', reflow);
+      window.removeEventListener('scroll', reflow, true);
+    };
+  }, [hoverCategoryIndex, displayCategories.length]);
 
   const openAllMenu = (cat) => {
     if (allMenuTimeoutRef.current) {
       clearTimeout(allMenuTimeoutRef.current);
       allMenuTimeoutRef.current = null;
     }
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setHoverCategoryIndex(null);
+    setCategoryFlyoutLayout(null);
     setAllMenuCategory(cat);
     const firstSub = Array.isArray(cat?.sub_category) && cat.sub_category.length > 0 ? cat.sub_category[0] : null;
     setAllMenuSubcategoryId(firstSub?.id ?? null);
@@ -401,7 +534,7 @@ export default function Header({ categories = [] }) {
 
         {/* Primary bar — navy on all breakpoints so utility icons stay white; desktop header shell above picks up white below category rail */}
         <div className="relative border-b border-white/10 bg-gradient-to-b from-brand-navy to-brand-navy-deep py-3 md:py-3.5">
-          <div className="relative mx-auto flex max-w-[1550px] items-center gap-2.5 px-3 min-[400px]:gap-3 min-[400px]:px-4 md:gap-6 md:px-8">
+          <div className="relative mx-auto flex w-full max-w-[1550px] flex-nowrap items-center gap-2.5 px-3 min-[400px]:gap-3 min-[400px]:px-4 md:gap-6 md:px-8">
             <Link
               href="/"
               aria-label="Mobile Hat Home"
@@ -420,7 +553,7 @@ export default function Header({ categories = [] }) {
               </span>
             </Link>
 
-            <div ref={searchContainerRef} className="relative order-2 min-w-0 flex-1 md:order-2">
+            <div ref={searchContainerRef} className="relative order-2 min-w-0 flex-1 md:order-2 md:max-w-2xl lg:max-w-3xl xl:max-w-none xl:flex-1">
               <form
                 onSubmit={handleSearchSubmit}
                 className="flex h-10 w-full min-w-0 max-w-full overflow-hidden rounded-lg border border-white/25 bg-white shadow-sm md:h-11 md:border md:border-slate-200 md:shadow-sm md:transition-colors md:focus-within:border-slate-300 md:focus-within:ring-2 md:focus-within:ring-slate-900/[0.06]"
@@ -583,11 +716,11 @@ export default function Header({ categories = [] }) {
               )}
             </div>
 
-            <div className="order-3 flex shrink-0 items-center gap-2 md:order-3">
+            <div className="order-3 ml-auto flex shrink-0 items-center gap-2 md:order-3">
               <div className="hidden items-center gap-0.5 md:flex">
                 <Link
                   href="/offers"
-                  className="inline-flex items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-white/10"
+                  className="inline-flex items-center gap-2 rounded-lg bg-brand-orange px-2.5 py-2 text-[13px] font-semibold text-white shadow-md shadow-brand-orange/30 transition-colors hover:bg-brand-orange-hover"
                 >
                   <FiZap className="h-5 w-5 shrink-0 text-white" strokeWidth={2.25} />
                   <span className="hidden lg:inline">Offers</span>
@@ -657,13 +790,13 @@ export default function Header({ categories = [] }) {
         </div>
 
         {/* Category rail — desktop: light, typographic (matches retail “pro” patterns) */}
-        <div className="relative z-40 hidden border-t border-slate-200/90 bg-slate-50/90 md:block">
-          <div className="mx-auto flex max-w-[1550px] flex-wrap items-center gap-2 px-4 py-2 md:px-8 lg:flex-nowrap lg:gap-4 lg:py-2.5">
+        <div className="relative z-40 hidden overflow-visible border-t border-slate-200/90 bg-slate-50/90 md:block">
+          <div className="mx-auto flex w-full max-w-[1550px] flex-nowrap items-center gap-2 px-4 py-2 md:px-8 lg:gap-4 lg:py-2.5">
 
             <div className="relative shrink-0">
               <div
                 className="group relative inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 lg:px-3 lg:py-2"
-                onMouseEnter={() => openAllMenu(displayCategories?.[0] ?? null)}
+                onMouseEnter={() => openAllMenu(allCategories?.[0] ?? displayCategories?.[0] ?? null)}
                 onMouseLeave={scheduleCloseAllMenu}
               >
                 <FiMenu size={16} strokeWidth={2} className="text-slate-500" />
@@ -694,7 +827,7 @@ export default function Header({ categories = [] }) {
 
                     <div className="flex max-h-[min(62vh,640px)]">
                       <div className="w-[min(220px,32vw)] shrink-0 overflow-y-auto border-r border-slate-100 bg-white p-2">
-                        {displayCategories.map((cat, idx) => {
+                        {allCategories.map((cat, idx) => {
                           const isActive =
                             (allMenuCategory?.id || allMenuCategory?.category_id || allMenuCategory?.name) ===
                             (cat.id || cat.category_id || cat.name);
@@ -780,18 +913,23 @@ export default function Header({ categories = [] }) {
               </div>
             </div>
 
-            <div className="flex min-h-9 min-w-0 flex-1 items-center justify-center py-0.5 lg:min-h-10">
-              <nav className="no-scrollbar flex w-max max-w-full items-center gap-0.5 overflow-x-auto lg:gap-1">
-                <div className="flex shrink-0 items-center gap-0.5 lg:gap-1">
-                {displayCategories.map((cat, idx) => (
+            <div className="flex min-h-9 min-w-0 flex-1 items-center justify-center overflow-visible px-1 py-0.5 lg:min-h-10">
+              <nav className="no-scrollbar flex w-full max-w-full items-center justify-center overflow-visible lg:gap-1">
+                <div className="no-scrollbar flex w-max max-w-full shrink-0 items-center justify-center gap-0.5 overflow-x-auto overflow-y-visible lg:gap-1">
+                {displayCategories.map((cat, idx) => {
+                  const catSlug = cat.slug || cat.name?.toLowerCase().replace(/\s+/g, '-');
+                  return (
                   <div
-                    key={cat.id || idx}
+                    key={cat.id || cat.category_id || idx}
+                    ref={(el) => {
+                      categoryItemRefs.current[idx] = el;
+                    }}
                     className="relative shrink-0"
-                    onMouseEnter={() => openMegaMenu(idx)}
+                    onMouseEnter={(e) => openMegaMenu(idx, e.currentTarget)}
                     onMouseLeave={scheduleCloseMegaMenu}
                   >
                     <Link
-                      href={`/category/${cat.slug || cat.name.toLowerCase().replace(/\s+/g, '-')}`}
+                      href={`/category/${catSlug}`}
                       className={`flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-1.5 text-[12px] transition lg:gap-1.5 lg:px-2.5 lg:py-2 lg:text-[13px] ${
                         hoverCategoryIndex === idx
                           ? 'bg-white font-medium text-slate-900 shadow-sm ring-1 ring-slate-200/90'
@@ -801,65 +939,9 @@ export default function Header({ categories = [] }) {
                       <span className="opacity-70 grayscale contrast-[0.9]">{getCategoryIcon(cat.name || cat.category_name)}</span>
                       <span>{cat.name || cat.category_name}</span>
                     </Link>
-                    {hoverCategoryIndex === idx && (
-                      <div
-                        className="flyout-submenu absolute left-0 top-full z-50 w-[min(288px,calc(100vw-1.5rem))] pt-1.5"
-                        onMouseEnter={() => openMegaMenu(idx)}
-                        onMouseLeave={scheduleCloseMegaMenu}
-                      >
-                        <div className="overflow-hidden rounded-lg border border-slate-200/90 bg-white text-slate-800 shadow-[0_20px_50px_rgba(15,23,42,0.12)]">
-                          <div className="border-b border-slate-100 px-3 py-2">
-                            <p className="text-[12px] font-medium text-slate-900">{cat.name || cat.category_name}</p>
-                            <p className="text-[11px] text-slate-500">Subcategories</p>
-                          </div>
-
-                          {(() => {
-                            const catSlug = cat.slug || cat.name?.toLowerCase().replace(/\s+/g, '-');
-                            const subcategories = Array.isArray(cat?.sub_category) ? cat.sub_category : [];
-
-                            if (subcategories.length === 0) {
-                              return (
-                                <div className="px-4 py-5 text-center">
-                                  <p className="text-[13px] text-slate-500">No subcategories</p>
-                                  <Link
-                                    href={`/category/${catSlug}`}
-                                    className="mt-2 inline-block text-[12px] font-medium text-slate-900 underline-offset-4 hover:underline"
-                                  >
-                                    Browse category
-                                  </Link>
-                                </div>
-                              );
-                            }
-
-                            return (
-                              <div className="max-h-[min(300px,48vh)] overflow-y-auto py-0.5">
-                                {subcategories.map((subcat, sIdx) => (
-                                  <Link
-                                    key={subcat.id || subcat.name}
-                                    href={`/category/${catSlug}?subcategory_id=${subcat.id}`}
-                                    className="group flex items-center justify-between gap-2 px-3 py-2 text-[13px] text-slate-700 transition hover:bg-slate-50"
-                                    style={{ animationDelay: `${sIdx * 12}ms` }}
-                                  >
-                                    <span className="text-left leading-snug">{subcat.name}</span>
-                                    <FiChevronRight className="h-4 w-4 shrink-0 text-slate-300 transition group-hover:text-slate-500" aria-hidden />
-                                  </Link>
-                                ))}
-                                <div className="border-t border-slate-100 bg-slate-50/80 px-3 py-2">
-                                  <Link
-                                    href={`/category/${catSlug}`}
-                                    className="text-[12px] font-medium text-slate-700 underline-offset-4 hover:text-slate-900 hover:underline"
-                                  >
-                                    View all in this category
-                                  </Link>
-                                </div>
-                              </div>
-                            );
-                          })()}
-                        </div>
-                      </div>
-                    )}
                   </div>
-                ))}
+                  );
+                })}
                 </div>
               </nav>
             </div>
@@ -867,14 +949,80 @@ export default function Header({ categories = [] }) {
             <div className="flex shrink-0 items-center">
               <Link
                 href="/special-offers"
-                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-slate-200 bg-white px-3 py-1.5 text-[12px] font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 lg:px-3.5 lg:py-2"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md bg-brand-orange px-3 py-1.5 text-[12px] font-semibold text-white shadow-md shadow-brand-orange/30 transition-colors hover:bg-brand-orange-hover lg:px-3.5 lg:py-2"
               >
-                <FiZap className="h-3.5 w-3.5 text-amber-600/90" strokeWidth={2} />
+                <FiZap className="h-3.5 w-3.5 text-white" strokeWidth={2} />
                 <span>Deals</span>
               </Link>
             </div>
           </div>
         </div>
+
+      {categoryFlyoutMounted &&
+        hoverCategoryIndex !== null &&
+        categoryFlyoutLayout &&
+        createPortal(
+          (() => {
+            const cat = displayCategories[hoverCategoryIndex];
+            if (!cat) return null;
+            const catSlug = cat.slug || cat.name?.toLowerCase().replace(/\s+/g, '-');
+            const subcategories = getSubcategories(cat);
+            return (
+              <div
+                className="flyout-submenu fixed z-[200] w-[min(240px,calc(100vw-1.5rem))]"
+                style={{
+                  top: categoryFlyoutLayout.top,
+                  left: categoryFlyoutLayout.left,
+                  right: categoryFlyoutLayout.right,
+                }}
+                onMouseEnter={cancelCloseMegaMenu}
+                onMouseLeave={scheduleCloseMegaMenu}
+              >
+                <div className="overflow-hidden rounded-lg border border-slate-200/90 bg-white text-slate-800 shadow-[0_12px_36px_rgba(15,23,42,0.12)]">
+                  <div className="border-b border-slate-100 bg-slate-50/80 px-3 py-2">
+                    <p className="text-[12px] font-semibold text-slate-900">{cat.name || cat.category_name}</p>
+                    <p className="text-[10px] text-slate-500">Subcategories</p>
+                  </div>
+                  {subcategories.length > 0 ? (
+                    <ul className="max-h-[min(240px,40vh)] overflow-y-auto py-0.5">
+                      {subcategories.map((subcat) => (
+                        <li key={subcat.id || subcat.name}>
+                          <Link
+                            href={`/category/${catSlug}?subcategory_id=${subcat.id}`}
+                            className="group flex items-center justify-between gap-2 px-3 py-2 text-[13px] text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
+                          >
+                            <span className="truncate text-left leading-snug">{subcat.name}</span>
+                            <FiChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-300 group-hover:text-slate-500" aria-hidden />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="px-3 py-4 text-center">
+                      <p className="text-[12px] text-slate-500">No subcategories</p>
+                      <Link
+                        href={`/category/${catSlug}`}
+                        className="mt-2 inline-block text-[12px] font-medium text-slate-900 underline-offset-4 hover:underline"
+                      >
+                        Browse category
+                      </Link>
+                    </div>
+                  )}
+                  <div className="border-t border-slate-100 bg-slate-50/80 px-3 py-2">
+                    <Link
+                      href={`/category/${catSlug}`}
+                      className="text-[11px] font-medium text-slate-700 underline-offset-4 hover:text-slate-900 hover:underline"
+                    >
+                      View all in this category
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            );
+          })(),
+          document.body
+        )}
+
       </header>
 
       {/* Mobile drawer */}

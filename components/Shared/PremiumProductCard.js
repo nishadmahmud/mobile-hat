@@ -191,9 +191,9 @@ export default function PremiumProductCard({
                 <button
                     type="button"
                     onClick={handleAddToCart}
-                    className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-navy py-2.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-brand-navy-deep md:py-3 md:text-[13px]"
+                    className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-brand-orange py-2.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-md shadow-brand-orange/30 transition-colors hover:bg-brand-orange-hover md:py-3 md:text-[13px]"
                 >
-                    <FiShoppingBag className="h-4 w-4 shrink-0 text-brand-yellow" aria-hidden />
+                    <FiShoppingBag className="h-4 w-4 shrink-0 text-white" aria-hidden />
                     Add to cart
                 </button>
             </div>
