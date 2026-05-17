@@ -27,20 +27,20 @@ function FlashSaleCountdown() {
     const pad = (n) => String(n).padStart(2, '0');
 
     return (
-        <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-900 md:text-xs">
+        <div className="flex flex-col gap-1.5 mt-2 sm:mt-0">
+            <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.15em] text-brand-navy whitespace-nowrap">
                 Ending Soon
             </span>
             <div className="flex items-center gap-1.5 md:gap-2">
-                <span className="flex min-w-[2.5rem] items-center justify-center rounded-lg bg-brand-navy px-2 py-1.5 text-[14px] font-black tabular-nums text-white shadow-inner md:min-w-[2.75rem] md:px-2.5 md:py-2 md:text-[15px]">
+                <span className="flex h-8 w-9 md:h-9 md:w-10 items-center justify-center rounded-md bg-brand-navy text-[14px] md:text-[15px] font-bold tabular-nums text-white shadow-sm">
                     {pad(parts.h)}
                 </span>
-                <span className="text-sm font-black text-brand-navy md:text-base">:</span>
-                <span className="flex min-w-[2.5rem] items-center justify-center rounded-lg bg-brand-navy px-2 py-1.5 text-[14px] font-black tabular-nums text-white shadow-inner md:min-w-[2.75rem] md:px-2.5 md:py-2 md:text-[15px]">
+                <span className="text-[18px] md:text-[20px] font-black text-brand-navy">:</span>
+                <span className="flex h-8 w-9 md:h-9 md:w-10 items-center justify-center rounded-md bg-brand-navy text-[14px] md:text-[15px] font-bold tabular-nums text-white shadow-sm">
                     {pad(parts.m)}
                 </span>
-                <span className="text-sm font-black text-brand-navy md:text-base">:</span>
-                <span className="flex min-w-[2.5rem] items-center justify-center rounded-lg bg-brand-navy px-2 py-1.5 text-[14px] font-black tabular-nums text-white shadow-inner md:min-w-[2.75rem] md:px-2.5 md:py-2 md:text-[15px]">
+                <span className="text-[18px] md:text-[20px] font-black text-brand-navy">:</span>
+                <span className="flex h-8 w-9 md:h-9 md:w-10 items-center justify-center rounded-md bg-brand-navy text-[14px] md:text-[15px] font-bold tabular-nums text-white shadow-sm">
                     {pad(parts.s)}
                 </span>
             </div>
@@ -146,23 +146,30 @@ export default function ShopCategories({ categories = [], flashSaleProducts = []
 
                     return (
                         <div className="flex flex-col gap-5 md:gap-7">
-                            {/* Header: text + countdown only — no promo image, no video/embed column */}
-                            <div className="rounded-2xl border border-brand-gray-border bg-gradient-to-br from-white to-brand-cream/40 px-5 py-5 shadow-[0_8px_30px_rgba(30,45,74,0.06)] md:px-8 md:py-6">
-                                <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-x-8 sm:gap-y-3">
-                                    <div className="min-w-0 flex-1 sm:max-w-xl">
-                                        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-brand-yellow md:text-[11px]">
-                                            Limited time
-                                        </p>
-                                        <h3 className="mt-1 text-2xl font-black tracking-tight text-brand-navy md:text-3xl">
-                                            Flash sale
-                                        </h3>
-                                        <p className="mt-2 text-sm leading-relaxed text-brand-muted">
-                                            Daily picks at special prices — while stock lasts.
-                                        </p>
+                            {/* Header: matched to mockup but using brand colors */}
+                            <div className="flex flex-col md:flex-row items-stretch overflow-hidden rounded-xl bg-brand-paper border border-brand-gray-border p-4 md:p-5 pl-0 md:pl-0 gap-4 shadow-sm min-h-[110px]">
+                                {/* Left side: Sticker & Timer */}
+                                <div className="flex items-center gap-2 md:gap-4 shrink-0">
+                                    <div className="relative w-[110px] h-[75px] md:w-[140px] md:h-[95px] shrink-0">
+                                        <Image
+                                            src="/flas sss.png"
+                                            alt="Flash Sale"
+                                            fill
+                                            className="object-contain object-left"
+                                            unoptimized
+                                            priority
+                                        />
                                     </div>
-                                    <div className="shrink-0 rounded-xl border border-brand-gray-border bg-white/90 px-4 py-3 shadow-sm md:px-5">
+                                    <div className="flex flex-col justify-center pt-2">
                                         <FlashSaleCountdown />
                                     </div>
+                                </div>
+                                
+                                {/* Right side: Video placeholder */}
+                                <div className="flex-1 flex items-center justify-center rounded-lg border border-dashed border-brand-gray-border bg-white/70 min-h-[80px]">
+                                    <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.15em] text-brand-muted">
+                                        Video
+                                    </span>
                                 </div>
                             </div>
 

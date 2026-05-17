@@ -566,100 +566,79 @@ export default function ProductInfo({
 
             {/* Primary commerce — after variant selection */}
             <div className="mb-6 border-b border-brand-gray-border/80 pb-6">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch sm:gap-3">
-                    <div className="flex h-12 w-full shrink-0 items-center justify-between self-center rounded-lg border border-brand-gray-border bg-brand-paper px-1 sm:h-auto sm:min-h-12 sm:w-[112px] sm:self-stretch sm:py-0">
+                
+                {/* Quantity */}
+                <div className="mb-4 flex items-center gap-3">
+                    <span className="text-sm font-bold text-brand-navy">Quantity:</span>
+                    <div className="flex h-10 w-[110px] items-center justify-between rounded-full border border-brand-gray-border bg-brand-paper px-1">
                         <button
                             type="button"
                             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                            className="flex size-10 cursor-pointer items-center justify-center rounded-md text-brand-muted transition-all hover:bg-white hover:text-brand-navy sm:size-9"
+                            className="flex size-8 cursor-pointer items-center justify-center rounded-full text-brand-muted transition-all hover:bg-white hover:text-brand-navy hover:shadow-sm"
                         >
-                            <Minus className="size-4" strokeWidth={2} />
+                            <Minus className="size-3.5" strokeWidth={2.5} />
                         </button>
                         <span className="min-w-8 text-center text-sm font-black tabular-nums text-brand-navy">{quantity}</span>
                         <button
                             type="button"
                             onClick={() => setQuantity(quantity + 1)}
-                            className="flex size-10 cursor-pointer items-center justify-center rounded-md text-brand-muted transition-all hover:bg-white hover:text-brand-navy sm:size-9"
+                            className="flex size-8 cursor-pointer items-center justify-center rounded-full text-brand-muted transition-all hover:bg-white hover:text-brand-navy hover:shadow-sm"
                         >
-                            <Plus className="size-4" strokeWidth={2} />
-                        </button>
-                    </div>
-
-                    <div className="flex min-h-12 min-w-0 flex-1 gap-2">
-                        <button
-                            type="button"
-                            onClick={handleAddToCart}
-                            className="inline-flex h-12 min-h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-brand-navy bg-white px-3 text-[13px] font-bold leading-none tracking-tight text-brand-navy transition-all hover:bg-brand-paper sm:min-h-12"
-                        >
-                            <ShoppingCart className="size-[18px] shrink-0" strokeWidth={2} aria-hidden />
-                            <span className="whitespace-nowrap">Add to Cart</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleBuyNow}
-                            className="inline-flex h-12 min-h-12 min-w-0 flex-[1.2] cursor-pointer items-center justify-center rounded-xl bg-brand-navy px-3 text-[13px] font-bold leading-none tracking-tight text-white shadow-lg shadow-brand-navy/25 transition-all hover:bg-brand-navy-deep sm:min-h-12"
-                        >
-                            <span className="whitespace-nowrap">Buy Now</span>
+                            <Plus className="size-3.5" strokeWidth={2.5} />
                         </button>
                     </div>
                 </div>
 
-                <p className="mt-3 flex items-center justify-center gap-2 border-t border-brand-gray-border/60 pt-3 text-center text-[11px] font-semibold leading-snug text-brand-muted sm:justify-start md:text-xs">
+                {/* 2x2 Action Buttons Grid */}
+                <div className="grid grid-cols-2 gap-3">
+                    {/* Add to Cart */}
+                    <button
+                        type="button"
+                        onClick={handleAddToCart}
+                        className="flex h-[50px] w-full cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-brand-navy bg-white px-2 text-[15px] font-bold leading-none tracking-tight text-brand-navy transition-all hover:bg-brand-paper"
+                    >
+                        <ShoppingCart className="size-[20px] shrink-0" strokeWidth={2.5} aria-hidden />
+                        <span className="whitespace-nowrap">Add To Cart</span>
+                    </button>
+
+                    {/* Buy Now */}
+                    <button
+                        type="button"
+                        onClick={handleBuyNow}
+                        className="flex h-[50px] w-full cursor-pointer items-center justify-center rounded-full bg-brand-navy px-2 text-[15px] font-bold leading-none tracking-tight text-white shadow-lg shadow-brand-navy/25 transition-all hover:bg-brand-navy-deep"
+                    >
+                        <span className="whitespace-nowrap">Buy Now</span>
+                    </button>
+
+                    {/* Messenger */}
+                    <span
+                        className="flex h-[50px] w-full cursor-default items-center justify-center gap-2 rounded-full border border-blue-200 bg-blue-50/50 px-2 text-[15px] font-bold leading-none tracking-tight text-blue-600 transition-all hover:bg-blue-50 select-none"
+                    >
+                        <Image
+                            src="/product-details-svg/2023_Facebook_icon.svg"
+                            alt="Messenger"
+                            width={22}
+                            height={22}
+                            className="size-[22px] object-contain"
+                        />
+                        <span className="whitespace-nowrap">Messenger</span>
+                    </span>
+
+                    {/* WhatsApp */}
+                    <span
+                        className="flex h-[50px] w-full cursor-default items-center justify-center gap-2 rounded-full border border-emerald-200 bg-emerald-50/50 px-2 text-[15px] font-bold leading-none tracking-tight text-emerald-600 transition-all hover:bg-emerald-50 select-none"
+                    >
+                        <MessageCircle className="size-[20px] shrink-0 text-emerald-600" strokeWidth={2.5} />
+                        <span className="whitespace-nowrap">WhatsApp</span>
+                    </span>
+                </div>
+
+                <p className="mt-5 flex items-center justify-center gap-2 border-t border-brand-gray-border/60 pt-4 text-center text-[11px] font-semibold leading-snug text-brand-muted sm:justify-start md:text-xs">
                     <Truck className="size-3.5 shrink-0 text-brand-navy" strokeWidth={2} aria-hidden />
                     <span>
                         Shipping within <span className="font-black text-brand-navy">0–3 business days</span>
                     </span>
                 </p>
-            </div>
-
-            {/* Contact + Social row (icons only — links removed) */}
-            <div className="mt-3 flex items-center gap-3">
-                <span
-                    className="inline-flex flex-1 cursor-default items-center justify-center gap-2 rounded-xl border border-brand-gray-border bg-white px-4 py-3 text-gray-900 select-none"
-                    aria-label="WhatsApp"
-                >
-                    <MessageCircle className="size-5 shrink-0 text-emerald-600" strokeWidth={2} />
-                    <span className="text-sm font-bold">WhatsApp</span>
-                </span>
-                <div className="flex items-center gap-2">
-                    <span
-                        className="flex h-12 w-14 cursor-default items-center justify-center rounded-md border border-brand-gray-border bg-white select-none"
-                        aria-label="Facebook"
-                    >
-                        <Image
-                            src="/product-details-svg/2023_Facebook_icon.svg"
-                            alt=""
-                            width={20}
-                            height={20}
-                            className="h-5 w-5 object-contain"
-                        />
-                    </span>
-                    <span
-                        className="flex h-12 w-14 cursor-default items-center justify-center rounded-md border border-brand-gray-border bg-white select-none"
-                        aria-label="TikTok"
-                    >
-                        <Image
-                            src="/product-details-svg/tiktok-solo-icon.svg"
-                            alt=""
-                            width={20}
-                            height={20}
-                            className="h-5 w-5 object-contain"
-                        />
-                    </span>
-                    <span
-                        className="flex h-12 w-14 cursor-default items-center justify-center rounded-md border border-brand-gray-border bg-white select-none"
-                        aria-label="YouTube"
-                    >
-                        <Image
-                            src="/product-details-svg/youtube-color-icon.svg"
-                            alt=""
-                            width={20}
-                            height={20}
-                            className="h-5 w-5 object-contain"
-                        />
-                    </span>
-                </div>
             </div>
         </div>
     );

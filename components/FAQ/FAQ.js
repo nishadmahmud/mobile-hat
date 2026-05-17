@@ -1,33 +1,68 @@
 "use client";
 
 import { useState } from 'react';
-import { FiChevronDown } from 'react-icons/fi';
 
 const FAQ_ITEMS = [
     {
-        q: "Are all phones sold by Mobile Hat 100% authentic?",
-        a: "Yes. We source devices from official distributors and authorized channels where possible. Every phone is listed with a valid IMEI and warranty details. We do not sell replicas.",
+        q: "অর্ডার কিভাবে করবো?",
+        a: "আপনি আমাদের ওয়েবসাইট থেকে সরাসরি প্রোডাক্ট সিলেক্ট করে 'Buy Now' বা 'Add to Cart' এ ক্লিক করে অর্ডার প্লেস করতে পারেন। বিস্তারিত জানতে আমাদের হেল্পলাইনে কল করুন।",
     },
     {
-        q: "What warranty do you offer?",
-        a: "New phones ship with the official manufacturer warranty where applicable. Our team helps you with claim guidance across Bangladesh.",
+        q: "অর্ডার কনফার্ম হতে কত সময় লাগে?",
+        a: "সাধারণত অর্ডার প্লেস করার পর ২৪ ঘণ্টার মধ্যে আমাদের কাস্টমার কেয়ার থেকে ফোন করে আপনার অর্ডারটি কনফার্ম করা হবে।",
     },
     {
-        q: "Do you offer delivery?",
-        a: "Yes — we ship nationwide via trusted couriers. Dhaka metro is typically fastest; other districts follow courier timelines.",
+        q: "ডেলিভারি চার্জ কত?",
+        a: "ডেলিভারি চার্জ নির্ভর করে আপনার লোকেশনের ওপর। ঢাকার ভেতরে সাধারণত ৬০-৮০ টাকা এবং ঢাকার বাইরে ১২০-১৫০ টাকা চার্জ করা হয়।",
     },
     {
-        q: "Can I return or exchange a product?",
-        a: "We offer a 7-day return window for eligible unopened items. Defective items are replaced per policy. See our Refund page for details.",
+        q: "পণ্য কত দিনে ডেলিভারি পাবো?",
+        a: "ঢাকার ভেতরে সাধারণত ২৪-৪৮ ঘণ্টা এবং ঢাকার বাইরে ২-৪ দিনের মধ্যে ডেলিভারি সম্পন্ন হয়।",
     },
     {
-        q: "Do you accept trade-ins?",
-        a: "Trade-in availability depends on stock and inspection. Contact support with your device model for a quick estimate.",
+        q: "কোন কুরিয়ার সার্ভিস ব্যবহার করা হয়?",
+        a: "আমরা সাধারণত রেডএক্স, পাঠাও, এবং সুন্দরবন কুরিয়ার সার্ভিসের মাধ্যমে ডেলিভারি করে থাকি।",
     },
     {
-        q: "What payment methods do you accept?",
-        a: "Cash on delivery, mobile banking, cards via SSLCommerz, and EMI on select products.",
+        q: "পেমেন্ট কিভাবে করবো?",
+        a: "আপনি ক্যাশ অন ডেলিভারি (COD), বিকাশ, নগদ, রকেট, বা ব্যাংক কার্ডের মাধ্যমে পেমেন্ট করতে পারবেন।",
     },
+    {
+        q: "কখন Advance Payment দিতে হয়?",
+        a: "ঢাকার বাইরে ডেলিভারির ক্ষেত্রে ডেলিভারি চার্জ অথবা নির্দিষ্ট পরিমাণ টাকা অগ্রিম প্রদান করতে হতে পারে।",
+    },
+    {
+        q: "Advance Payment কিভাবে দেবো?",
+        a: "আপনি আমাদের অফিসিয়াল বিকাশ/নগদ/রকেট মার্চেন্ট বা পার্সোনাল নাম্বারে সেন্ড মানি বা পেমেন্ট করতে পারবেন।",
+    },
+    {
+        q: "পণ্য রিটার্ন করা যাবে কি?",
+        a: "হ্যাঁ, পণ্য হাতে পাওয়ার পর যদি কোনো ত্রুটি বা সমস্যা থাকে তবে আমাদের রিটার্ন পলিসি অনুযায়ী পণ্য রিটার্ন করতে পারবেন।",
+    },
+    {
+        q: "ডেলিভারি নেওয়ার পর রিটার্ন করা যাবে?",
+        a: "ডেলিভারি ম্যান থাকা অবস্থায় প্রোডাক্ট চেক করে নেয়ার অনুরোধ করা হলো। যদি কোনো সমস্যা থাকে, তবে সাথে সাথে রিটার্ন করতে পারবেন।",
+    },
+    {
+        q: "রিপ্লেসমেন্ট পলিসি কী?",
+        a: "কোনো টেকনিক্যাল সমস্যা বা ভুল প্রোডাক্ট পেলে ৩-৭ দিনের মধ্যে রিপ্লেসমেন্ট সুবিধা পাবেন।",
+    },
+    {
+        q: "রিফান্ড কিভাবে পাবো?",
+        a: "পণ্য রিটার্ন করার পর তা আমাদের ওয়্যারহাউজে পৌঁছালে ৩-৭ কার্যদিবসের মধ্যে আপনার পেমেন্ট মেথড অনুযায়ী রিফান্ড করা হবে।",
+    },
+    {
+        q: "রিটার্ন শিপিং চার্জ কে বহন করবে?",
+        a: "যদি আমাদের ভুলের কারণে বা পণ্য ড্যামেজ থাকার কারণে রিটার্ন হয়, তবে সম্পূর্ণ চার্জ আমরা বহন করবো। অন্যথায় গ্রাহককে বহন করতে হবে।",
+    },
+    {
+        q: "ভাঙা বা ক্ষতিগ্রস্ত পণ্য পেলে কী করবো?",
+        a: "ডেলিভারি ম্যানের উপস্থিতিতে পণ্য চেক করুন। ভাঙা বা ক্ষতিগ্রস্ত হলে তা গ্রহণ না করে ডেলিভারি ম্যানকে ফেরত দিন এবং আমাদের জানান।",
+    },
+    {
+        q: "পণ্য নিরাপদ থাকবে—কিভাবে নিশ্চিত করবেন?",
+        a: "আমরা বাবল র‍্যাপ এবং নিরাপদ প্যাকেজিং ব্যবহার করে পণ্য পাঠিয়ে থাকি, যাতে কোনোভাবেই ক্ষতিগ্রস্ত না হয়।",
+    }
 ];
 
 export default function FAQ() {
@@ -38,55 +73,45 @@ export default function FAQ() {
     };
 
     return (
-        <>
-            <div className="w-full bg-brand-navy py-5 md:py-7 text-center border-t border-white/10">
-                <h2 className="text-xl md:text-3xl font-black uppercase tracking-[0.14em] text-white md:tracking-[0.2em]">
-                    Frequently asked questions
-                </h2>
-            </div>
-            <section className="w-full bg-brand-paper py-12 md:py-16">
-                <div className="max-w-4xl mx-auto px-4 md:px-8">
-                    <p className="text-center text-brand-muted text-sm md:text-base mb-8 md:mb-10">
-                        Everything you need to know before you checkout.
-                    </p>
+        <section className="w-full bg-[#E5F0F5] py-12 md:py-16">
+            <div className="max-w-3xl mx-auto px-4 md:px-8">
+                <div className="w-full bg-[#1A9A67] py-4 md:py-5 rounded-lg text-center mb-8 shadow-sm">
+                    <h2 className="text-2xl md:text-4xl font-bold text-white tracking-wide">
+                        Frequently asked questions
+                    </h2>
+                </div>
 
-                    <div className="space-y-2">
-                        {FAQ_ITEMS.map((item, idx) => (
+                <div className="flex flex-col">
+                    {FAQ_ITEMS.map((item, idx) => (
+                        <div
+                            key={idx}
+                            className="border-b border-[#C0D0DC]"
+                        >
+                            <button
+                                type="button"
+                                onClick={() => toggle(idx)}
+                                className="w-full flex items-center justify-between py-4 text-left"
+                            >
+                                <span className="text-[17px] md:text-lg font-bold text-gray-800 pr-4 leading-snug">
+                                    {item.q}
+                                </span>
+                                <span className="text-2xl font-light text-gray-800 shrink-0">
+                                    {openIndex === idx ? '-' : '+'}
+                                </span>
+                            </button>
+
                             <div
-                                key={idx}
-                                className={`rounded-xl border transition-all duration-300 ${openIndex === idx
-                                    ? 'bg-white border-brand-yellow shadow-md shadow-brand-navy/10'
-                                    : 'bg-white border-brand-gray-border hover:border-brand-yellow/60'
+                                className={`overflow-hidden transition-all duration-300 ${openIndex === idx ? 'max-h-[480px] opacity-100' : 'max-h-0 opacity-0'
                                     }`}
                             >
-                                <button
-                                    type="button"
-                                    onClick={() => toggle(idx)}
-                                    className="w-full flex items-center justify-between px-5 md:px-6 py-4 md:py-5 text-left"
-                                >
-                                    <span className={`text-base md:text-lg font-semibold pr-4 transition-colors ${openIndex === idx ? 'text-brand-navy' : 'text-brand-navy/90'
-                                        }`}>
-                                        {item.q}
-                                    </span>
-                                    <FiChevronDown
-                                        className={`w-5 h-5 shrink-0 transition-all duration-300 ${openIndex === idx ? 'rotate-180 text-brand-yellow' : 'text-brand-muted'
-                                            }`}
-                                    />
-                                </button>
-
-                                <div
-                                    className={`overflow-hidden transition-all duration-300 ${openIndex === idx ? 'max-h-[480px] opacity-100' : 'max-h-0 opacity-0'
-                                        }`}
-                                >
-                                    <div className="px-5 md:px-6 pb-5 md:pb-6">
-                                        <p className="text-base text-brand-muted leading-relaxed">{item.a}</p>
-                                    </div>
+                                <div className="pb-5 pr-6">
+                                    <p className="text-base text-gray-600 leading-relaxed">{item.a}</p>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
-            </section>
-        </>
+            </div>
+        </section>
     );
 }

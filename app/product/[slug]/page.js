@@ -306,9 +306,6 @@ export default function ProductDetailsPage() {
         : productData?.images;
     const normalizedProductCategorySlug = String(productData?.category?.slug || '').toLowerCase();
     const normalizedProductCategoryName = String(productData?.category?.name || '').toLowerCase();
-    const isUsedPhoneProduct =
-        normalizedProductCategorySlug === 'used-phone' ||
-        normalizedProductCategoryName === 'used phone';
 
     const categoryBackHref =
         productData?.category?.slug != null && String(productData.category.slug).length > 0
@@ -383,7 +380,7 @@ export default function ProductDetailsPage() {
                         {/* Mobile: gallery first under title band; desktop: gallery left + sticky rail right */}
                         <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
                             <div className="order-1 min-w-0 flex-1">
-                                <ProductGallery images={galleryImages} showUsedTag={isUsedPhoneProduct} />
+                                <ProductGallery images={galleryImages} />
                             </div>
 
                             <aside className="order-2 w-full shrink-0 lg:sticky lg:top-24 lg:w-[min(100%,460px)] xl:w-[min(100%,500px)]">

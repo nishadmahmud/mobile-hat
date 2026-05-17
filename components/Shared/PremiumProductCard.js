@@ -10,7 +10,6 @@ import { useCart } from "../../context/CartContext";
 export default function PremiumProductCard({
     product,
     variant = "default",
-    showUsedTag = false,
     /** Small corner mark on the product image (off by default). */
     showBrandCornerBadge = false,
 }) {
@@ -160,15 +159,7 @@ export default function PremiumProductCard({
                     </button>
                 </div>
 
-                {showUsedTag && (
-                    <Image
-                        src="/used_tag.png"
-                        alt="Used product"
-                        width={80}
-                        height={25}
-                        className="pointer-events-none absolute left-3 bottom-10 z-10 h-auto w-[64px] md:w-[72px]"
-                    />
-                )}
+
             </div>
 
             <div className="flex flex-1 flex-col px-3 pb-3 pt-2 text-center md:px-4">

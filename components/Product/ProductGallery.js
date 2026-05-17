@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 
-export default function ProductGallery({ images = [], showUsedTag = false }) {
+export default function ProductGallery({ images = [] }) {
     const imageArray =
         images && images.length > 0
             ? images.map((img) => (typeof img === "string" ? img.trim() : img))
@@ -110,15 +110,7 @@ export default function ProductGallery({ images = [], showUsedTag = false }) {
                         ))}
                     </div>
 
-                    {showUsedTag && (
-                        <Image
-                            src="/used_tag.png"
-                            alt="Used product"
-                            width={118}
-                            height={36}
-                            className="pointer-events-none absolute bottom-3 left-3 z-20 h-auto w-[72px] md:bottom-4 md:left-4 md:w-[118px]"
-                        />
-                    )}
+
 
                     {imageArray.length > 1 && (
                         <>
